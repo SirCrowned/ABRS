@@ -42,6 +42,5 @@ public class Application {
         context.register(ApplicationConfig.class);
         return context;
     }
-
 }
 

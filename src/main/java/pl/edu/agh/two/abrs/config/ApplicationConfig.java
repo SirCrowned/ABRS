@@ -81,7 +81,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
 
     public Properties hibernateProperties() {
         Properties properties = new Properties();
-        properties.setProperty("hibernate.dialect",  "org.hibernate.dialect.H2Dialect");
+        properties.setProperty("hibernate.dialect", "org.hibernate.dialect.H2Dialect");
         properties.setProperty("hibernate.show_sql", "true");
         properties.setProperty("hibernate.hbm2ddl.auto", "true");
         return properties;
@@ -93,5 +93,4 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
             SessionFactory sessionFactory) {
         return new HibernateTransactionManager(sessionFactory);
     }
-
 }
