@@ -33,6 +33,9 @@ proguard/
 .gradle/
 build/
 out/
+gradlew*
+gradle/*
+
 
 # JVM heap space error logs
 hs_err_pid*.log
