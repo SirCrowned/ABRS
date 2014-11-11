@@ -31,8 +31,9 @@ public class SourceController {
     public
     @ResponseBody
     String addSource(@RequestParam("name") String name, @RequestParam("host") String host, @RequestParam("port") String port,
-                     @RequestParam("user") String user, @RequestParam("password") String password, @RequestParam("database") String database) {
-        if (sourceService.addSourceDatabase(name, host, port, user, password, database)) {
+                     @RequestParam("user") String user, @RequestParam("password") String password, @RequestParam("database") String database,
+                     @RequestParam("table") String table) {
+        if (sourceService.addSourceDatabase(name, host, port, user, password, database, table)) {
             return "OK";
         } else {
             return "ERROR";

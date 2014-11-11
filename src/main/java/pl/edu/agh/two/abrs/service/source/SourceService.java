@@ -21,7 +21,7 @@ public class SourceService {
     @Autowired
     private SourcePropertiesRepository sourcePropertiesRepository;
 
-    public boolean addSourceDatabase(String name, String host, String port, String user, String password, String database) {
+    public boolean addSourceDatabase(String name, String host, String port, String user, String password, String database, String table) {
         Source source = new Source(name, SourceType.DATABASE);
         source = sourceRepository.save(source);
         List<SourceProperties> sourcePropertiesList = new ArrayList<>();
@@ -45,6 +45,10 @@ public class SourceService {
         SourceProperties dbProp = new SourceProperties(SourcePropertiesType.DATABASE, database, source);
         dbProp = sourcePropertiesRepository.save(dbProp);
         sourcePropertiesList.add(dbProp);
+
+        SourceProperties tableProp = new SourceProperties(SourcePropertiesType.TABLE, table, source);
+        tableProp = sourcePropertiesRepository.save(tableProp);
+        sourcePropertiesList.add(tableProp);
 
         source.setSourceProperties(sourcePropertiesList);
         source = sourceRepository.saveAndFlush(source);
