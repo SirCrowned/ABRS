@@ -1,0 +1,29 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head lang="en">
+  </head>
+  <body>
+    <div th:fragment="header">
+      <nav class="navbar navbar-inverse" role="navigation">
+        <div class="container-fluid">
+          <div class="navbar-header">
+            <a class="navbar-brand" href="#">
+              ABRS
+            </a>
+          </div>
+          <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+            <ul class="nav navbar-nav">
+              <li><a th:href="@{/}">Index</a></li>
+              <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">Source <span class="caret"></span></a>
+                <ul class="dropdown-menu" role="menu">
+                  <li><a th:href="@{/source}">Create</a></li>
+                  <li><a th:href="@{/sourceList}">List</a></li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+    </div>
+  </body>
+</html>
