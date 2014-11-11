@@ -1,0 +1,155 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+  </head>
+  <body>
+
+    <div th:include="fragments :: header"></div>
+
+    <div class="container">
+      <div class="alert alert-success" role="alert" id="ok" style="display: none">
+        Creating source successful.
+      </div>
+      <div class="alert alert-danger" role="alert" id="error" style="display: none">
+        Error on creating source.
+      </div>
+      <h1>Create new source:</h1>
+
+      <form class="form-horizontal" role="form">
+        <div class="form-group">
+          <label for="name" class="col-sm-2 control-label">Name:</label>
+
+          <div class="col-sm-6">
+            <input type="text" class="form-control" id="name" placeholder="name"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="type" class="col-sm-2 control-label">Select type:</label>
+
+          <div class="col-sm-6">
+            <select class="form-control" id="type">
+              <option selected="selected">CSV</option>
+              <option>DATABASE</option>
+              <option>XML</option>
+            </select>
+          </div>
+        </div>
+        <div id="nodb">
+          <div class="form-group">
+            <label for="url" class="col-sm-2 control-label">Url:</label>
+
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="url" placeholder="url"/>
+            </div>
+          </div>
+        </div>
+        <div id="db" style="display: none">
+          <div class="form-group">
+            <label for="host" class="col-sm-2 control-label">Host:</label>
+
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="host" placeholder="host"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="port" class="col-sm-2 control-label">Port:</label>
+
+            <div class="col-sm-6">
+              <input type="number" class="form-control" id="port"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="user" class="col-sm-2 control-label">User:</label>
+
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="user" placeholder="user"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="password" class="col-sm-2 control-label">Password:</label>
+
+            <div class="col-sm-6">
+              <input type="password" class="form-control" id="password" placeholder="password"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="database" class="col-sm-2 control-label">Database:</label>
+
+            <div class="col-sm-6">
+              <input type="text" class="form-control" id="database" placeholder="database"/>
+            </div>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-6">
+            <button type="button" class="btn btn-default" id="create">Create</button>
+          </div>
+        </div>
+      </form>
+    </div>
+    <script type="text/javascript">
+      $('#type').on('change', function () {
+        if ($(this).val() == 'DATABASE') {
+          $('#nodb').hide();
+          $('#db').show();
+        } else {
+          $('#db').hide();
+          $('#nodb').show();
+        }
+      });
+
+      $('#create').on('click', function () {
+        if ($('#type').val() == 'DATABASE') {
+          $.ajax({
+            url: "http://localhost:8080/source/add/db/",
+            type: "POST",
+            data: {
+              name: $("#name").val(),
+              host: $('#host').val(),
+              port: $('#port').val(),
+              user: $('#user').val(),
+              password: $('#password').val(),
+              database: $('#database').val()
+            }
+          }).done(function (data) {
+            if (data == "OK") {
+              $("#ok").show();
+              setTimeout(function () {
+                $("#ok").hide();
+              }, 5000);
+            } else {
+              $("#error").show();
+              setTimeout(function () {
+                $("#error").hide();
+              }, 5000);
+            }
+          })
+        } else {
+          $.ajax({
+            url: "http://localhost:8080/source/add/url/",
+            type: "POST",
+            data: {
+              name: $("#name").val(),
+              type: $('#type').val(),
+              url: $('#url').val()
+            }
+          }).done(function (data) {
+            if (data == "OK") {
+              $("#ok").show();
+              setTimeout(function () {
+                $("#ok").hide();
+              }, 5000);
+            } else {
+              $("#error").show();
+              setTimeout(function () {
+                $("#error").hide();
+              }, 5000);
+            }
+          })
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -5,6 +5,5 @@ import java.util.function.Function;
 
 public interface Operator extends Function<List<Object>, Object> {
 
-	String name();
-
+    String name();
 }

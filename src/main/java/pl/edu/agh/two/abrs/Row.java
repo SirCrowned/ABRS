@@ -7,21 +7,21 @@ import java.util.List;
 
 public class Row {
 
-	private final List<String> fields;
+    private final List<String> fields;
 
-	public Row(String... fields) {
-		this(Arrays.asList(fields));
-	}
+    public Row(String... fields) {
+        this(Arrays.asList(fields));
+    }
 
-	public Row(List<String> fields) {
-		this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
-	}
+    public Row(List<String> fields) {
+        this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
+    }
 
-	public String get(int index) {
-		return fields.get(index);
-	}
+    public String get(int index) {
+        return fields.get(index);
+    }
 
-	public int length() {
-		return fields.size();
-	}
+    public int length() {
+        return fields.size();
+    }
 }
