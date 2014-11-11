@@ -9,6 +9,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
 import pl.edu.agh.two.abrs.config.ApplicationConfig;
+import pl.edu.agh.two.abrs.agent.AgentPlatform;
 
 import java.io.IOException;
 
@@ -25,6 +26,8 @@ public class Application {
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
         server.join();
+        AgentPlatform agentPlatform = new AgentPlatform();
+        agentPlatform.start();
     }
 
     private static ServletContextHandler getServletContextHandler(WebApplicationContext context) throws IOException {
