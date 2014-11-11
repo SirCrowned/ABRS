@@ -3,6 +3,7 @@ package pl.edu.agh.two.abrs.service;
 import org.junit.Before;
 import org.junit.Test;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.service.connection.ConnectionParams;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -67,19 +68,19 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
         dbConnectorService.readTable(incorrectPasswordParams(), TABLE_NAME);
     }
 
-    private DbReaderService.ConnectionParams connectionParams() {
+    private ConnectionParams connectionParams() {
         return connectionParams(DRIVER_CLASS, PASSWORD);
     }
 
-    private DbReaderService.ConnectionParams incorrectDriverParams() {
+    private ConnectionParams incorrectDriverParams() {
         return connectionParams(INCORRECT_DRIVER_NAME, PASSWORD);
     }
 
-    private DbReaderService.ConnectionParams incorrectPasswordParams() {
+    private ConnectionParams incorrectPasswordParams() {
         return connectionParams(DRIVER_CLASS, INCORRECT_PASSWORD);
     }
 
-    private DbReaderService.ConnectionParams connectionParams(String driverClassName, String password) {
-        return new DbReaderService.ConnectionParams(driverClassName, CONNECTION_STRING, USER, password);
+    private ConnectionParams connectionParams(String driverClassName, String password) {
+        return new ConnectionParams(driverClassName, CONNECTION_STRING, USER, password);
     }
 }

@@ -2,6 +2,7 @@ package pl.edu.agh.two.abrs.service;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.service.connection.ConnectionParams;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
