@@ -6,7 +6,9 @@ import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.service.connection.ConnectionParams;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 
@@ -66,6 +68,21 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
     public void should_throw_exception_for_incorrect_password() throws Exception {
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
         dbConnectorService.readTable(incorrectPasswordParams(), TABLE_NAME);
+    }
+
+    @Test
+    public void check_database_table_columns_names() throws Exception {
+
+        Map<String, Map<String, String>> expectedTables = new HashMap<>();
+        Map<String, String> expectedColumns = new HashMap<>();
+        expectedColumns.put("ID", "INTEGER");
+        expectedColumns.put("COL1", "VARCHAR");
+        expectedColumns.put("COL2", "VARCHAR");
+        expectedTables.put("TEST", expectedColumns);
+
+        DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
+        Map<String, Map<String, String>> result = dbConnectorService.collectTablesInfo(connectionParams());
+        assertEquals(result, expectedTables);
     }
 
     private ConnectionParams connectionParams() {
