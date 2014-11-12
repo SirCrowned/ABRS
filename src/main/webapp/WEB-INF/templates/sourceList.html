@@ -10,6 +10,34 @@
 
     <div class="container">
       <h1>Source List</h1>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Properties</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr th:each="source : ${sourceList}">
+          <td th:text="${source.id}"></td>
+          <td th:text="${source.name}"></td>
+          <td th:text="${source.sourceType}"></td>
+          <td>
+            <dl class="dl-horizontal" th:each="property : ${source.sourceProperties}">
+              <dt th:text="${property.key}"></dt>
+              <dd th:text="${property.value}"></dd>
+            </dl>
+          </td>
+          <td>
+            <a href="#" class="remove btn btn-danger" th:attr="data-id=${source.id}">Remove</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
   </body>
 </html>
