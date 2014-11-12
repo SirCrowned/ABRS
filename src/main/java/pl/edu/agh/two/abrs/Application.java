@@ -7,8 +7,9 @@ import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-import pl.edu.agh.two.abrs.config.ApplicationConfig;
 import pl.edu.agh.two.abrs.agent.AgentPlatform;
+import pl.edu.agh.two.abrs.agent.ExampleAgent;
+import pl.edu.agh.two.abrs.config.ApplicationConfig;
 
 import java.io.File;
 import java.io.IOException;
@@ -41,9 +42,11 @@ public class Application {
         Server server = new Server(DEFAULT_PORT);
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
-        server.join();
         AgentPlatform agentPlatform = new AgentPlatform();
-        agentPlatform.start();
+        agentPlatform.start(false); // Set to true for JADE GUI
+        agentPlatform.createNewAgent("Agent1", ExampleAgent.class.getName(), null);
+        agentPlatform.sendMessage("Agent1", "MESSAGE");
+        server.join();
     }
 }
 
