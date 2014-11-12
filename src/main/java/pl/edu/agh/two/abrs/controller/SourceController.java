@@ -39,4 +39,10 @@ public class SourceController {
             return "ERROR";
         }
     }
+
+    @RequestMapping(value = "/remove", method = RequestMethod.POST)
+    public @ResponseBody String removeSource(@RequestParam("id") long id) {
+        sourceService.removeSource(id);
+        return "OK";
+    }
 }

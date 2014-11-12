@@ -18,7 +18,7 @@ public class Source {
     @Column(name = "type", nullable = false)
     private SourceType sourceType;
 
-    @OneToMany(mappedBy = "source", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "source", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<SourceProperties> sourceProperties;
 
     public Source() {

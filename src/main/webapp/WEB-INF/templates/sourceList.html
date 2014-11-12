@@ -9,6 +9,12 @@
     <div th:include="fragments :: header"></div>
 
     <div class="container">
+      <div class="alert alert-success" role="alert" id="ok" style="display: none">
+        <p>Successfully removed source.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error" style="display: none">
+        <p>Error while deleting source.</p>
+      </div>
       <h1>Source List</h1>
 
       <table class="table table-striped">
@@ -39,5 +45,35 @@
         </tbody>
       </table>
     </div>
+    <script type="text/javascript">
+      jQuery(function($){
+        $('table a.remove').on('click', function(e) {
+          e.preventDefault();
+          if (confirm('Are you sure?')) {
+            var $item = $(this).closest('tr');
+            $.ajax({
+              url: "http://localhost:8080/source/remove",
+              type: "POST",
+              data: {
+                id: $(this).data('id')
+              }
+            }).done(function (data) {
+              if (data == "OK") {
+                $("#ok").slideDown();
+                setTimeout(function () {
+                  $("#ok").slideUp();
+                }, 5000);
+                $item.remove();
+              } else {
+                $("#error").slideDown();
+                setTimeout(function () {
+                  $("#error").slideUp();
+                }, 5000);
+              }
+            });
+          }
+        });
+      });
+    </script>
   </body>
 </html>
