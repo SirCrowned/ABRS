@@ -42,10 +42,14 @@ public class Application {
         Server server = new Server(DEFAULT_PORT);
         server.setHandler(getServletContextHandler(getContext()));
         server.start();
+
         AgentPlatform agentPlatform = new AgentPlatform();
         agentPlatform.start(false); // Set to true for JADE GUI
         agentPlatform.createNewAgent("Agent1", ExampleAgent.class.getName(), null);
+        // Let the agent start
+        Thread.sleep(1000);
         agentPlatform.sendMessage("Agent1", "MESSAGE");
+
         server.join();
     }
 }
