@@ -6,6 +6,10 @@ import jade.wrapper.AgentContainer;
 import jade.wrapper.AgentController;
 import jade.wrapper.ControllerException;
 
+/**
+ * Created by lopiola on 05.11.14.
+ */
+
 // A wrapper on JADE API that provides a minimalistic API for agent platform
 public class AgentPlatform {
     private final static int JADE_CONTAINER_PORT = 1090;
