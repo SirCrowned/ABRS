@@ -9,7 +9,71 @@
     <div th:include="fragments :: header"></div>
 
     <div class="container">
+      <div class="alert alert-success" role="alert" id="ok" style="display: none">
+        <p>Successfully removed source.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error" style="display: none">
+        <p>Error while deleting source.</p>
+      </div>
       <h1>Source List</h1>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Type</th>
+            <th scope="col">Properties</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr th:each="source : ${sourceList}">
+          <td th:text="${source.id}"></td>
+          <td th:text="${source.name}"></td>
+          <td th:text="${source.sourceType}"></td>
+          <td>
+            <dl class="dl-horizontal" th:each="property : ${source.sourceProperties}">
+              <dt th:text="${property.key}"></dt>
+              <dd th:text="${property.value}"></dd>
+            </dl>
+          </td>
+          <td>
+            <a href="#" class="remove btn btn-danger" th:attr="data-id=${source.id}">Remove</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
     </div>
+    <script type="text/javascript">
+      jQuery(function($){
+        $('table a.remove').on('click', function(e) {
+          e.preventDefault();
+          if (confirm('Are you sure?')) {
+            var $item = $(this).closest('tr');
+            $.ajax({
+              url: "http://localhost:8080/source/remove",
+              type: "POST",
+              data: {
+                id: $(this).data('id')
+              }
+            }).done(function (data) {
+              if (data == "OK") {
+                $("#ok").slideDown();
+                setTimeout(function () {
+                  $("#ok").slideUp();
+                }, 5000);
+                $item.remove();
+              } else {
+                $("#error").slideDown();
+                setTimeout(function () {
+                  $("#error").slideUp();
+                }, 5000);
+              }
+            });
+          }
+        });
+      });
+    </script>
   </body>
 </html>

@@ -70,4 +70,8 @@ public class SourceService {
 
         return source != null;
     }
+
+    public void removeSource(long id) {
+        sourceRepository.delete(id);
+    }
 }
