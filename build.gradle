@@ -13,6 +13,7 @@ repositories {
 }
 
 dependencies {
+    compile 'org.apache.commons:commons-lang3:3.3.2'
     compile 'org.eclipse.jetty:jetty-webapp:9.2.3.v20140905'
     compile "org.springframework:spring-context:4.1.1.RELEASE"
     compile "org.springframework:spring-core:4.1.1.RELEASE"
