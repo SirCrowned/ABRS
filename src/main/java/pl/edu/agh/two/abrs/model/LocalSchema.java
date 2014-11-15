@@ -27,16 +27,15 @@ public class LocalSchema {
     @OneToOne(cascade = CascadeType.ALL)
     private Source source;
 
-    @OneToMany(mappedBy = "localSchema", fetch = FetchType.EAGER)
-    private List<LocalSchemaColumn> columns;
+    @OneToMany(mappedBy = "localSchema", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private List<LocalSchemaColumn> localSchemaColumn;
 
     public LocalSchema() {
     }
 
-    public LocalSchema(String name, Source source, List<LocalSchemaColumn> columns) {
+    public LocalSchema(String name, Source source) {
         this.name = name;
         this.source = source;
-        this.columns = columns;
     }
 
     public Long getId() {
@@ -63,12 +62,12 @@ public class LocalSchema {
         this.source = source;
     }
 
-    public List<LocalSchemaColumn> getColumns() {
-        return columns;
+    public List<LocalSchemaColumn> getLocalSchemaColumn() {
+        return localSchemaColumn;
     }
 
-    void setColumns(List<LocalSchemaColumn> columns){
-        this.columns = columns;
+    public void setLocalSchemaColumn(List<LocalSchemaColumn> columns){
+        this.localSchemaColumn = columns;
     }
 
     @Override
