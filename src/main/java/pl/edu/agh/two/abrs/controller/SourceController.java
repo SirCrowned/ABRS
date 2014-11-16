@@ -7,6 +7,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.SourceType;
+import pl.edu.agh.two.abrs.service.db.ConnectionParams;
+import pl.edu.agh.two.abrs.service.db.DbReaderException;
+import pl.edu.agh.two.abrs.service.db.DbReaderService;
+import pl.edu.agh.two.abrs.service.db.MySqlConnectionParams;
 import pl.edu.agh.two.abrs.service.source.SourceService;
 
 @Controller
@@ -15,6 +19,9 @@ public class SourceController {
 
     @Autowired
     private SourceService sourceService;
+
+    @Autowired
+    private DbReaderService dbReaderService;
 
     @RequestMapping(value = "/add/url/", method = RequestMethod.POST)
     public
@@ -37,6 +44,20 @@ public class SourceController {
             return "OK";
         } else {
             return "ERROR";
+        }
+    }
+
+    @RequestMapping(value = "/test/db/", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    String testConnection(@RequestParam("host") String host, @RequestParam("port") String port, @RequestParam("user") String user,
+                          @RequestParam("password") String password, @RequestParam("database") String database) {
+        try {
+            ConnectionParams params = new MySqlConnectionParams(host, Integer.parseInt(port), database, user, password);
+            dbReaderService.testConnection(params);
+            return "OK";
+        } catch (DbReaderException e) {
+            return e.getMessage();
         }
     }
 
