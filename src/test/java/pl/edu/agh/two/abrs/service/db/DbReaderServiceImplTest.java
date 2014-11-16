@@ -1,9 +1,8 @@
-package pl.edu.agh.two.abrs.service;
+package pl.edu.agh.two.abrs.service.db;
 
 import org.junit.Before;
 import org.junit.Test;
 import pl.edu.agh.two.abrs.Row;
-import pl.edu.agh.two.abrs.service.connection.ConnectionParams;
 
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -35,6 +34,18 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
     }
 
     @Test
+    public void should_properly_test_connection_when_correct_params_are_provided() throws DbReaderException {
+        DbReaderServiceImpl dbReaderService = new DbReaderServiceImpl();
+        dbReaderService.testConnection(connectionParams());
+    }
+
+    @Test(expected = DbReaderException.class)
+    public void should_properly_test_connection_when_incorrect_params_are_provided() throws DbReaderException {
+        DbReaderServiceImpl dbReaderService = new DbReaderServiceImpl();
+        dbReaderService.testConnection(incorrectPasswordParams());
+    }
+
+    @Test
     public void should_correctly_read_data_from_table() throws Exception {
 
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
@@ -52,19 +63,19 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
         }
     }
 
-    @Test(expected = DbReaderService.DbReaderException.class)
+    @Test(expected = DbReaderException.class)
     public void should_throw_exception_for_non_existent_table() throws Exception {
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
         dbConnectorService.readTable(connectionParams(), NON_EXISTENT_TABLE_NAME);
     }
 
-    @Test(expected = DbReaderService.DbReaderException.class)
+    @Test(expected = DbReaderException.class)
     public void should_throw_exception_for_incorrect_driver_class_name() throws Exception {
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
         dbConnectorService.readTable(incorrectDriverParams(), TABLE_NAME);
     }
 
-    @Test(expected = DbReaderService.DbReaderException.class)
+    @Test(expected = DbReaderException.class)
     public void should_throw_exception_for_incorrect_password() throws Exception {
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
         dbConnectorService.readTable(incorrectPasswordParams(), TABLE_NAME);
@@ -73,16 +84,14 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
     @Test
     public void check_database_table_columns_names() throws Exception {
 
-        Map<String, Map<String, String>> expectedTables = new HashMap<>();
         Map<String, String> expectedColumns = new HashMap<>();
         expectedColumns.put("ID", "INTEGER");
         expectedColumns.put("COL1", "VARCHAR");
         expectedColumns.put("COL2", "VARCHAR");
-        expectedTables.put("TEST", expectedColumns);
 
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
-        Map<String, Map<String, String>> result = dbConnectorService.collectTablesInfo(connectionParams());
-        assertEquals(result, expectedTables);
+        Map<String, String> result = dbConnectorService.getColumnsMetadata(connectionParams(), "TEST");
+        assertEquals(result, expectedColumns);
     }
 
     private ConnectionParams connectionParams() {

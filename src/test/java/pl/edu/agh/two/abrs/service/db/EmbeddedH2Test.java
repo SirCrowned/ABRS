@@ -1,4 +1,4 @@
-package pl.edu.agh.two.abrs.service;
+package pl.edu.agh.two.abrs.service.db;
 
 import org.junit.After;
 import org.junit.Before;

@@ -1,11 +1,16 @@
-package pl.edu.agh.two.abrs.service;
+package pl.edu.agh.two.abrs.service.db;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
-import pl.edu.agh.two.abrs.service.connection.ConnectionParams;
 
 import java.lang.reflect.Field;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -29,35 +34,42 @@ public class DbReaderServiceImpl implements DbReaderService {
         }
     }
 
-    public Map<String, Map<String, String>> collectTablesInfo(ConnectionParams params) throws DbReaderException, SQLException {
+    public void testConnection(ConnectionParams params) throws DbReaderException {
+        Connection connection = connect(params);
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            throw new DbReaderException(e);
+        }
+    }
+
+    public Map<String, String> getColumnsMetadata(ConnectionParams params, String tableName) throws DbReaderException {
 
         Map<Integer, String> jdbcMappings = getAllJdbcTypeNames();
-        Connection connection = connect(params);
-        DatabaseMetaData meta = connection.getMetaData();
-        Map<String, Map<String, String>> result = new HashMap<>();
+        Map<String, String> columnsMetadata = new HashMap<>();
 
-        String[] types = {"TABLE"};
-        ResultSet rs = meta.getTables(null, null, "%", types);
-        while (rs.next()) {
-            String tableName = rs.getString(3);
-            Map<String, String> columns = new HashMap<>();
+        try (Connection connection = connect(params)) {
+            Statement statement = connection.createStatement();
 
-            Statement stmt = connection.createStatement();
-            ResultSet res = stmt.executeQuery("select * from " + tableName);
-            ResultSetMetaData rsmd = res.getMetaData();
+            String sql = String.format(SELECT_STATEMENT_PATTERN, tableName);
+            ResultSet res = statement.executeQuery(sql);
+            ResultSetMetaData metadata = res.getMetaData();
 
-            for (int i = 1; i <= rsmd.getColumnCount(); i++)
-                columns.put(rsmd.getColumnLabel(i), jdbcMappings.get(rsmd.getColumnType(i)));
-            result.put(tableName, columns);
+            for (int i = 1; i <= metadata.getColumnCount(); i++) {
+                columnsMetadata.put(metadata.getColumnLabel(i), jdbcMappings.get(metadata.getColumnType(i)));
+            }
+        } catch (SQLException e) {
+            throw new DbReaderException(e);
         }
-        return result;
+        return columnsMetadata;
     }
 
     private Map<Integer, String> getAllJdbcTypeNames() throws DbReaderException {
         Map<Integer, String> result = new HashMap<>();
         try {
-            for (Field field : Types.class.getFields())
+            for (Field field : Types.class.getFields()) {
                 result.put((Integer) field.get(null), field.getName());
+            }
         } catch (IllegalAccessException e) {
             throw new DbReaderException(e);
         }
@@ -70,9 +82,9 @@ public class DbReaderServiceImpl implements DbReaderService {
 
     public List<Row> readSql(ConnectionParams params, String sql) throws DbReaderException {
         List<Row> rows = new ArrayList<>();
-        Connection connection = connect(params);
 
-        try (Statement statement = connection.createStatement()) {
+        try (Connection connection = connect(params)) {
+            Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(sql);
             ResultSetMetaData metaData = resultSet.getMetaData();
 

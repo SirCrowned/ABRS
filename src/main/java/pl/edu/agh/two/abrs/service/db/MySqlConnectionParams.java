@@ -1,4 +1,4 @@
-package pl.edu.agh.two.abrs.service.connection;
+package pl.edu.agh.two.abrs.service.db;
 
 public class MySqlConnectionParams extends ConnectionParams {
 
