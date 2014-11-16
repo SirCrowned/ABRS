@@ -1,10 +1,5 @@
 package pl.edu.agh.two.abrs.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-import pl.edu.agh.two.abrs.service.operator.IdentityOperator;
-import pl.edu.agh.two.abrs.service.operator.Operator;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -16,6 +11,13 @@ import java.util.function.Function;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.thymeleaf.util.Validate;
+import pl.edu.agh.two.abrs.service.operator.IdentityOperator;
+import pl.edu.agh.two.abrs.service.operator.Operator;
 
 @Service
 public class DataTransformingServiceImpl implements DataTransformingService {
@@ -40,7 +42,7 @@ public class DataTransformingServiceImpl implements DataTransformingService {
 
     private Map<Pattern, Function<String, ParseResult>> setupParsers() {
         Map<Pattern, Function<String, ParseResult>> parsers = new LinkedHashMap<>();
-        Pattern operatorPattern = Pattern.compile("(\\w+)\\(((?:\\s*\\$\\d\\s*,?)+)\\)");
+        Pattern operatorPattern = Pattern.compile("(\\w+)\\(((?:\\s*\\$?\\d\\s*,?)+)\\)");
         parsers.put(operatorPattern, (mapping) -> {
             Matcher matcher = operatorPattern.matcher(mapping);
             if (matcher.matches()) {
@@ -49,9 +51,8 @@ public class DataTransformingServiceImpl implements DataTransformingService {
                 if (operator == null) {
                     throw new IllegalArgumentException("Invalid operator: " + operatorName);
                 }
-                List<Integer> args = Arrays.asList(matcher.group(2).replace("$", "").replaceAll("\\s+", "").split(","))
+                List<String> args = Arrays.asList(matcher.group(2).replaceAll("\\s+", "").split(","))
                         .stream()
-                        .map(Integer::valueOf)
                         .collect(Collectors.toList());
                 return new ParseResult(operator, args);
             }
@@ -59,11 +60,9 @@ public class DataTransformingServiceImpl implements DataTransformingService {
         });
 
         Pattern identityOperatorPattern = Pattern.compile("\\$\\d+");
-        parsers.put(identityOperatorPattern, (mapping) -> {
-            return new ParseResult(
-                    operatorsMap.get(IdentityOperator.NAME),
-                    Collections.singletonList(Integer.parseInt(mapping.replace("$", "").trim())));
-        });
+        parsers.put(identityOperatorPattern, (mapping) -> new ParseResult(
+                operatorsMap.get(IdentityOperator.NAME),
+                Collections.singletonList(mapping.trim())));
         return Collections.unmodifiableMap(parsers);
     }
 
@@ -84,15 +83,29 @@ public class DataTransformingServiceImpl implements DataTransformingService {
         return Collections.unmodifiableList(outputRow);
     }
 
+    @Override
+    public List<String> getAvailableOperators() {
+        ArrayList<String> operators = new ArrayList<>(operatorsMap.keySet());
+        operators.sort(String::compareTo);
+        return Collections.unmodifiableList(operators);
+    }
+
     private List<Object> toRealArguments(List<Object> inputRow, ParseResult parseResult) {
-        parseResult.arguments.stream()
-                .forEach(argIndex -> {
-                    if (argIndex < 1 || argIndex > inputRow.size()) {
-                        throw new IllegalArgumentException("Index out of range. Index should be a number between: 1 and " + inputRow.size());
-                    }
-                });
         return parseResult.arguments.stream()
-                .map(i -> inputRow.get(i - 1))
+                .map(arg -> {
+                    if (arg.trim().startsWith("$")) {
+                        String argIndexAsString = arg.substring(1);
+                        Validate.isTrue(StringUtils.isNumeric(argIndexAsString), "Invalid argument: " + argIndexAsString);
+                        int argIndex = Integer.valueOf(argIndexAsString);
+                        if (argIndex < 1 || argIndex > inputRow.size()) {
+                            throw new IllegalArgumentException("Index out of range. Index should be a number between: 1 and " + inputRow.size());
+                        }
+                        return inputRow.get(argIndex - 1);
+                    } else {
+                        Validate.isTrue(StringUtils.isNumeric(arg), "Invalid argument: " + arg);
+                        return Integer.valueOf(arg);
+                    }
+                })
                 .collect(Collectors.toList());
     }
 
@@ -108,9 +121,9 @@ public class DataTransformingServiceImpl implements DataTransformingService {
     private static class ParseResult {
         final Operator operator;
 
-        final List<Integer> arguments;
+        final List<String> arguments;
 
-        private ParseResult(Operator operator, List<Integer> arguments) {
+        private ParseResult(Operator operator, List<String> arguments) {
             this.operator = operator;
             this.arguments = arguments;
         }
