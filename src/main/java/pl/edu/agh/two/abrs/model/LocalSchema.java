@@ -24,7 +24,7 @@ public class LocalSchema {
     @Column(name = "name", nullable = false, unique = true)
     private String name;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne(cascade = CascadeType.DETACH)
     private Source source;
 
     @OneToMany(mappedBy = "localSchema", fetch = FetchType.EAGER, cascade = CascadeType.ALL)

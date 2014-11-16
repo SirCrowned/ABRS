@@ -21,7 +21,7 @@ public class MetadataService {
 
         Source source = sourceRepository.getOne(sourceId);
 
-        List<LocalSchemaColumn> dummy = new ArrayList<LocalSchemaColumn>();
+        List<LocalSchemaColumn> dummy = new ArrayList<>();
         dummy.add(new LocalSchemaColumn("PRODUCT", ColumnType.STRING, null));
         dummy.add(new LocalSchemaColumn("PRICE", ColumnType.DOUBLE, null));
         dummy.add(new LocalSchemaColumn("QUANTITY", ColumnType.INTEGER, null));

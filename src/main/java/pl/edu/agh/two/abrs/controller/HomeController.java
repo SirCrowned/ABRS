@@ -44,7 +44,8 @@ public class HomeController {
     @RequestMapping(value = "/localSchemaList", method = RequestMethod.GET)
     public String getLocalSchemaList(ModelMap model) {
         model.addAttribute("localSchemaList", localSchemaRepository.findAll());
-
         return "localSchemaList";
     }
+
+
 }
