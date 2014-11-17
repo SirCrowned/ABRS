@@ -5,6 +5,10 @@ public class DbReaderException extends Exception {
         super(e.getMessage(), e);
     }
 
+    public DbReaderException(String message) {
+        super(message);
+    }
+
     public DbReaderException(String message, Exception e) {
         super(message, e);
     }
