@@ -2,8 +2,9 @@ package pl.edu.agh.two.abrs.service.db;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.model.ColumnType;
+import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 
-import java.lang.reflect.Field;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
@@ -12,9 +13,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @Service
 public class DbReaderServiceImpl implements DbReaderService {
@@ -43,39 +42,6 @@ public class DbReaderServiceImpl implements DbReaderService {
         }
     }
 
-    public Map<String, String> getColumnsMetadata(ConnectionParams params, String tableName) throws DbReaderException {
-
-        Map<Integer, String> jdbcMappings = getAllJdbcTypeNames();
-        Map<String, String> columnsMetadata = new HashMap<>();
-
-        try (Connection connection = connect(params)) {
-            Statement statement = connection.createStatement();
-
-            String sql = String.format(SELECT_STATEMENT_PATTERN, tableName);
-            ResultSet res = statement.executeQuery(sql);
-            ResultSetMetaData metadata = res.getMetaData();
-
-            for (int i = 1; i <= metadata.getColumnCount(); i++) {
-                columnsMetadata.put(metadata.getColumnLabel(i), jdbcMappings.get(metadata.getColumnType(i)));
-            }
-        } catch (SQLException e) {
-            throw new DbReaderException(e);
-        }
-        return columnsMetadata;
-    }
-
-    private Map<Integer, String> getAllJdbcTypeNames() throws DbReaderException {
-        Map<Integer, String> result = new HashMap<>();
-        try {
-            for (Field field : Types.class.getFields()) {
-                result.put((Integer) field.get(null), field.getName());
-            }
-        } catch (IllegalAccessException e) {
-            throw new DbReaderException(e);
-        }
-        return result;
-    }
-
     public List<Row> readTable(ConnectionParams params, String tableName) throws DbReaderException {
         return readSql(params, String.format(SELECT_STATEMENT_PATTERN, tableName));
     }
@@ -100,5 +66,80 @@ public class DbReaderServiceImpl implements DbReaderService {
         } catch (SQLException e) {
             throw new DbReaderException(e);
         }
+    }
+
+    public List<LocalSchemaColumn> getColumns(ConnectionParams params, String tableName) throws DbReaderException {
+
+        List<LocalSchemaColumn> columns = new ArrayList<>();
+
+        try (Connection connection = connect(params)) {
+            Statement statement = connection.createStatement();
+
+            String sql = String.format(SELECT_STATEMENT_PATTERN, tableName);
+            ResultSet res = statement.executeQuery(sql);
+            ResultSetMetaData metadata = res.getMetaData();
+
+            for (int i = 1; i <= metadata.getColumnCount(); i++) {
+                columns.add(createLocalSchemaColumn(metadata.getColumnLabel(i), metadata.getColumnType(i)));
+            }
+        } catch (SQLException e) {
+            throw new DbReaderException(e);
+        }
+        return columns;
+    }
+
+    private LocalSchemaColumn createLocalSchemaColumn(String name, int type) throws DbReaderException {
+        ColumnType columnType;
+        switch (type) {
+            case Types.BOOLEAN:
+                columnType = ColumnType.BOOLEAN;
+                break;
+            case Types.TINYINT:
+            case Types.SMALLINT:
+            case Types.INTEGER:
+            case Types.BIGINT:
+                columnType = ColumnType.INTEGER;
+                break;
+            case Types.FLOAT:
+            case Types.REAL:
+            case Types.DOUBLE:
+            case Types.NUMERIC:
+            case Types.DECIMAL:
+                columnType = ColumnType.DOUBLE;
+                break;
+            case Types.CHAR:
+            case Types.VARCHAR:
+            case Types.LONGVARCHAR:
+            case Types.NCHAR:
+            case Types.NVARCHAR:
+            case Types.LONGNVARCHAR:
+            case Types.CLOB:
+            case Types.NCLOB:
+                columnType = ColumnType.STRING;
+                break;
+            case Types.DATE:
+            case Types.TIMESTAMP:
+            case Types.TIME:
+                columnType = ColumnType.DATE;
+                break;
+            // Not supported below that line//
+            case Types.BINARY:
+            case Types.VARBINARY:
+            case Types.LONGVARBINARY:
+            case Types.NULL:
+            case Types.OTHER:
+            case Types.JAVA_OBJECT:
+            case Types.DISTINCT:
+            case Types.STRUCT:
+            case Types.BLOB:
+            case Types.REF:
+            case Types.DATALINK:
+            case Types.ROWID:
+            case Types.SQLXML:
+            default:
+                throw new DbReaderException("Not supported JDBC type (java.sql.Types): " + type + ".");
+        }
+
+        return new LocalSchemaColumn(name, columnType, null);
     }
 }

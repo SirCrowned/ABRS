@@ -1,9 +1,9 @@
 package pl.edu.agh.two.abrs.service.db;
 
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 
 import java.util.List;
-import java.util.Map;
 
 public interface DbReaderService {
 
@@ -16,14 +16,14 @@ public interface DbReaderService {
     void testConnection(ConnectionParams params) throws DbReaderException;
 
     /**
-     * Returns specified table metadata
+     * Returns columns from specified table
      *
      * @param params    connection parameters
-     * @param tableName name of table for which metadata should be extracted
-     * @return Map columnName -> columnType
+     * @param tableName name of table from which columns should be returned
+     * @return Columns list
      * @throws DbReaderException when connection with given table cannot be established
      */
-    Map<String, String> getColumnsMetadata(ConnectionParams params, String tableName) throws DbReaderException;
+    List<LocalSchemaColumn> getColumns(ConnectionParams params, String tableName) throws DbReaderException;
 
     /**
      * Extracts data from specified table
