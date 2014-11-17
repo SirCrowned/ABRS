@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 import pl.edu.agh.two.abrs.service.data.MetadataService;
+import pl.edu.agh.two.abrs.service.db.DbReaderException;
+import pl.edu.agh.two.abrs.service.db.DbReaderService;
 import pl.edu.agh.two.abrs.service.localSchema.LocalSchemaService;
 
 import java.io.IOException;
@@ -35,7 +37,13 @@ public class LocalSchemaController {
     @ResponseBody
     String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId) {
 
-        List<LocalSchemaColumn> columns = metaDataService.getMetadata(sourceId);
+        List<LocalSchemaColumn> columns;
+        try {
+            columns = metaDataService.getMetadata(sourceId);
+        } catch (DbReaderException e) {
+            e.printStackTrace();
+            return "ERROR";
+        }
 
         if (localSchemaService.addLocalSchema(name, sourceId, columns)) {
             return "OK";
