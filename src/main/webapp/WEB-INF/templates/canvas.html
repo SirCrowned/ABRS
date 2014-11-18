@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+    <script th:src="@{http://staticelite.info/elitenetwork/scripts/kinetic-v5.1.1.min.js}"></script>
+    <script th:src="@{http://staticelite.info/elitenetwork/scripts/jquery.timer-1.0.3.js}"></script>
+    <script th:src="@{http://staticelite.info/elitenetwork/scripts/jquery.transformtool-1.0.3.min.js}"></script>
+    <style>
+      body {
+        margin: 0px;
+        padding: 0px;
+      }
+      #container {
+        width: 1000px;
+        height: 500px;
+        display: inline;
+      }
+      #update {
+        position: relative;
+        top: -30px;
+        left: 70px;
+      }
+    </style>
+  </head>
+  <body>
+    <div th:include="fragments :: header"></div>
+    <div id="container"></div>
+    <script src="http://d3lp1msu2r81bx.cloudfront.net/kjs/js/lib/kinetic-v5.0.2.min.js"></script>
+    <script defer="defer">
+        var stage = new Kinetic.Stage({
+          container: 'container',
+          width: 1000,
+          height: 500
+        });
+        var layer = new Kinetic.Layer();
+        stage.add(layer);
+
+        function makeLine(parent, points, x, y) {
+          var line = new Kinetic.Line({
+            points: points,
+            stroke: 'black',
+            strokeWidth: 2,
+            lineCap: 'round',
+            lineJoin: 'round',
+            dashArray: [1, 1],
+            x: x,
+            y: y,
+            width: 60,
+            height: 10
+          });
+          parent.add(line);
+          return line;
+        }
+
+        makeLine(layer, [200, 0, 200, 250, 200, 500], 0, 0);
+        makeLine(layer, [0, 1, 500, 1, 1000, 1], 0, 0);
+        makeLine(layer, [0, 0, 0, 250, 0, 470], 0, 0);
+        makeLine(layer, [0, 470, 100, 470, 200, 470], 0, 0);
+        makeLine(layer, [999, 0, 999, 250, 999, 500], 0, 0);
+        makeLine(layer, [200, 499, 600, 499, 1000, 499], 0, 0);
+        makeLine(layer, [200, 0, 200, 250, 200, 500], 0, 0);
+
+        var toggleElements = [];
+
+        var Tool = function (tool) {
+          this.tool = tool;
+          tool.on('dragmove', function() {
+            var currentX = tool.getPosition().x;
+            var currentY = tool.getPosition().y;
+            if(currentX < 200 && currentY > (470 - tool.getHeight())) {
+              tool.setPosition(currentX, (470 - tool.getHeight()));
+            }
+          });
+        };
+
+        var toolCircleLabel = new Kinetic.Text({
+          x: 20,
+          y: 40,
+          text: 'Source',
+          fontSize: 20,
+          fontFamily: 'Calibri',
+          fill: 'black'
+        });
+        layer.add(toolCircleLabel);
+
+        var toolCircle = new Kinetic.Circle({
+          x: 130,
+          y: 50,
+          radius: 20,
+          fill: 'red',
+          stroke: 'black',
+          strokeWidth: 2,
+          draggable: true
+        });
+        layer.add(toolCircle);
+
+        new Tool(toolCircle);
+
+        var toolActionLabel = new Kinetic.Text({
+          x: 20,
+          y: 90,
+          text: 'Action',
+          fontSize: 20,
+          fontFamily: 'Calibri',
+          fill: 'black'
+        });
+        layer.add(toolActionLabel);
+
+        var toolAction = new Kinetic.Rect({
+          x: 100,
+          y: 100,
+          width: 60,
+          height: 2,
+          fill: 'black',
+          stroke: 'black',
+          draggable: true
+        });
+        toggleElements.push(toolAction);
+        layer.add(toolAction);
+
+        function turnOfHelpers() {
+          $(toggleElements[i]).each(function () {
+            $(this).transformTool('hide');
+          });
+        }
+
+        toolAction.on('mouseup', function() {
+          $(toolAction).transformTool({
+            x: toolAction.x,
+            y: toolAction.y,
+            'handler-radius': 3,
+            'handler-fill': 'white',
+            'border-stroke': '#333333'
+          });
+        });
+
+        layer.draw();
+    </script>
+    <br/>
+    <button id="update">Update</button>
+    <h1 id="h01"></h1>
+  </body>
+</html>

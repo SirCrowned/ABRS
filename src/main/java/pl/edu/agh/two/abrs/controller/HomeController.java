@@ -15,7 +15,7 @@ public class HomeController {
     @Autowired
     private SourceRepository sourceRepository;
 
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/start", method = RequestMethod.GET)
     public String getHome() {
         return "index";
     }
@@ -23,6 +23,11 @@ public class HomeController {
     @RequestMapping(value = "/source", method = RequestMethod.GET)
     public String getSource() {
         return "source";
+    }
+
+    @RequestMapping(value = "/canvas", method = RequestMethod.GET)
+    public String getCanvas() {
+        return "canvas";
     }
 
     @RequestMapping(value = "/sourceList", method = RequestMethod.GET)
