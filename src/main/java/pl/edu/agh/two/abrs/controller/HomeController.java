@@ -47,5 +47,12 @@ public class HomeController {
         return "localSchemaList";
     }
 
+    @RequestMapping(value = "/mapping", method = RequestMethod.GET)
+    public String getMapping(ModelMap model) {
+        model.addAttribute("sourceList", sourceRepository.findAll());
+        model.addAttribute("localSchemaList", localSchemaRepository.findAll());
+        return "mapping";
+    }
+
 
 }
