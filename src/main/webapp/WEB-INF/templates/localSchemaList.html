@@ -1,0 +1,161 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+  </head>
+  <body>
+
+    <div th:include="fragments :: header"></div>
+
+    <div class="container">
+      <div class="alert alert-success" role="alert" id="ok" style="display: none">
+        <p>Local schema has been removed.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error-remove" style="display: none">
+        <p>Error while removing local schema.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error-edit" style="display: none">
+        <p>Error while editing schema meta data.</p>
+      </div>
+      <h1>Local Schemas List</h1>
+
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Source</th>
+            <th scope="col">Columns</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr th:each="localSchema : ${localSchemaList}">
+          <td th:text="${localSchema.id}"></td>
+          <td th:text="${localSchema.name}"></td>
+          <td th:text="${localSchema.source.name}"></td>
+          <td>
+            <div th:id="${'noedit-'+localSchema.id}" >
+              <dl class="dl-horizontal" th:each="column : ${localSchema.localSchemaColumn}">
+                <dt th:text="${column.name}"></dt>
+                <dd th:text="${column.type}" ></dd>
+              </dl>
+            </div>
+            <div th:id="${'edit-'+localSchema.id}" style="display: none">
+              <form th:id="${'form-'+localSchema.id}" role="form">
+                <div class="form-group">
+                  <dl class="dl-horizontal" th:each="column : ${localSchema.localSchemaColumn}">
+                    <dt th:text="${column.name}"></dt>
+                    <dd>
+                      <input type="text" th:value="${column.type}" class="form-control" th:id="${'columnType-'+localSchema.id}" />
+                    </dd>
+                  </dl>
+                </div>
+                <div class="form-group">
+                  <div class="col-sm-offset-3 col-sm-6">
+                    <a href="#" id="cancel" class="remove btn btn-default" th:attr="data-id=${localSchema.id}">Cancel</a>
+                    <a href="#" id="save" class="remove btn btn-success" th:attr="data-id=${localSchema.id}">Save</a>
+                  </div>
+                </div>
+
+              </form>
+            </div>
+          </td>
+
+          <td>
+             <a href="#" id="edit-btn" class="remove btn btn-default" th:attr="data-id=${localSchema.id}">Edit</a>
+             <a href="#" id="remove" class="remove btn btn-danger" th:attr="data-id=${localSchema.id}">Remove</a>
+
+
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+      jQuery(function($) {
+        $('table #edit-btn').on('click', function (e) {
+          var $id = $(this).data('id');
+          $('#noedit-' + $id).hide();
+          $('#edit-' + $id).show();
+
+        });
+      });
+
+      jQuery(function($) {
+        $('table #cancel').on('click', function (e) {
+          if (confirm('Not saved changes. Are you sure?')) {
+            var $id = $(this).data('id');
+            $('#noedit-' + $id).show();
+            $('#edit-' + $id).hide();
+          }
+        });
+      });
+
+      jQuery(function($){
+        $('table #save').on('click', function(e) {
+          e.preventDefault();
+
+          var $id = $(this).data('id');
+          var cols = {};
+          var $names =  $('#edit-'+$id+' dt');
+
+          for (var i=0; i < $names.length; i++){
+            cols[$names.get(i).innerText] = $('#form-'+$id+' input').get(i).value;
+          }
+
+          $.ajax({
+            url: "http://localhost:8080/localSchema/edit/",
+            type: "POST",
+            data: {
+              localSchemaId: $id,
+              columns: JSON.stringify(cols)
+            }
+          }).done(function (data) {
+            if (data == "OK") {
+              location.href = "http://localhost:8080/localSchemaList/";
+            } else {
+              $("#error-edit").slideDown();
+              setTimeout(function () {
+                $("#error-edit").slideUp();
+              }, 5000);
+            }
+          });
+
+        });
+      });
+
+      jQuery(function($){
+        $('table #remove').on('click', function(e) {
+          e.preventDefault();
+          if (confirm('Are you sure?')) {
+            var $item = $(this).closest('tr');
+            $.ajax({
+              url: "http://localhost:8080/localSchema/remove",
+              type: "POST",
+              data: {
+                id: $(this).data('id')
+              }
+            }).done(function (data) {
+              if (data == "OK") {
+                $("#ok").slideDown();
+                setTimeout(function () {
+                  $("#ok").slideUp();
+                }, 5000);
+                $item.remove();
+              } else {
+                $("#error-remove").slideDown();
+                setTimeout(function () {
+                  $("#error-remove").slideUp();
+                }, 5000);
+              }
+            });
+          }
+        });
+      });
+      //]]>
+    </script>
+  </body>
+</html>

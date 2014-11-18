@@ -5,4 +5,6 @@ import java.util.List;
 public interface DataTransformingService {
 
     List<Object> transform(String function, List<Object> inputRow);
+    
+    List<String> getAvailableOperators();
 }

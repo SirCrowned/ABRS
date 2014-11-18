@@ -39,3 +39,7 @@ gradle/*
 
 # JVM heap space error logs
 hs_err_pid*.log
+
+# JADE files
+APDescription.txt
+MTPs-Main-Container.txt
