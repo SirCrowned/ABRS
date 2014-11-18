@@ -7,17 +7,17 @@ import java.util.List;
 
 public class Row {
 
-    private final List<String> fields;
+    private final List<Object> fields;
 
-    public Row(String... fields) {
+    public Row(Object... fields) {
         this(Arrays.asList(fields));
     }
 
-    public Row(List<String> fields) {
+    public Row(List<Object> fields) {
         this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
     }
 
-    public String get(int index) {
+    public Object get(int index) {
         return fields.get(index);
     }
 
