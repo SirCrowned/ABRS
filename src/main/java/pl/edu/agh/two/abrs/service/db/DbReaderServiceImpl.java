@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class DbReaderServiceImpl implements DbReaderService {
@@ -69,9 +68,8 @@ public class DbReaderServiceImpl implements DbReaderService {
         }
     }
 
-    public List<LocalSchemaColumn> getColumns(ConnectionParams params, String tableName) throws DbReaderException {
-
-        List<LocalSchemaColumn> columns = new ArrayList<>();
+    public List<String> getColumns(ConnectionParams params, String tableName) throws DbReaderException {
+        List<String> columns = new ArrayList<>();
 
         try (Connection connection = connect(params)) {
             Statement statement = connection.createStatement();
@@ -81,7 +79,7 @@ public class DbReaderServiceImpl implements DbReaderService {
             ResultSetMetaData metadata = res.getMetaData();
 
             for (int i = 1; i <= metadata.getColumnCount(); i++) {
-                columns.add(createLocalSchemaColumn(metadata.getColumnLabel(i), metadata.getColumnType(i)));
+                columns.add(metadata.getColumnLabel(i));
             }
         } catch (SQLException e) {
             throw new DbReaderException(e);
@@ -141,6 +139,6 @@ public class DbReaderServiceImpl implements DbReaderService {
                 throw new DbReaderException("Not supported JDBC type (java.sql.Types): " + type + ".");
         }
 
-        return new LocalSchemaColumn(name, columnType, null);
+        return null;//new LocalSchemaColumn(name, columnType, null);
     }
 }

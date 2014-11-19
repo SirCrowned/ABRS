@@ -11,14 +11,11 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.ColumnType;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
-import pl.edu.agh.two.abrs.service.csv.CsvReadException;
 import pl.edu.agh.two.abrs.service.data.MetadataService;
-import pl.edu.agh.two.abrs.service.db.DbReaderException;
-import pl.edu.agh.two.abrs.service.db.DbReaderService;
 import pl.edu.agh.two.abrs.service.localSchema.LocalSchemaService;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -38,7 +35,7 @@ public class LocalSchemaController {
     @ResponseBody
     String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId) {
 
-        List<LocalSchemaColumn> columns;
+        List<String> columns;
         try {
             columns = metaDataService.getMetadata(sourceId);
         } catch (Exception e) {
@@ -46,7 +43,7 @@ public class LocalSchemaController {
             return "ERROR";
         }
 
-        if (localSchemaService.addLocalSchema(name, sourceId, columns)) {
+        if (localSchemaService.addLocalSchema(name, sourceId, new ArrayList<>())) {
             return "OK";
         } else {
             return "ERROR";

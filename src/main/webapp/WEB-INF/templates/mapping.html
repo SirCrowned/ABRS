@@ -59,28 +59,17 @@
               <th scope="col">Local</th>
               <th scope="col">Global</th>
               <th scope="col">Type</th>
+              <th scope="col"></th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
+            <tr th:each="mapping : ${mappings}" th:attr="data-id=${mapping.id}">
+              <td th:text="${mapping.from}"></td>
+              <td th:text="${mapping.to}"></td>
+              <td th:text="${mapping.type}"></td>
+              <td>
+                <a href="#" class="remove btn btn-danger" th:attr="data-id=${mapping.id}">Remove</a>
+              </td>
             </tr>
           </tbody>
         </table>

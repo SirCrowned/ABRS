@@ -1,5 +1,7 @@
 package pl.edu.agh.two.abrs.model;
 
+import pl.edu.agh.two.abrs.service.operator.Operator;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,7 +15,6 @@ import javax.persistence.Table;
 @Entity(name = "localSchemaColumn")
 @Table(name = "localSchemaColumn")
 public class LocalSchemaColumn {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -22,8 +23,14 @@ public class LocalSchemaColumn {
     @Column(name = "name", nullable = false)
     private String name;
 
+    @Column(name = "sourceName", nullable = false)
+    private String sourceName;
+
     @Column(name = "type", nullable = false)
     private ColumnType type;
+
+    @Column(name = "transformation", nullable = false)
+    private Operator transformation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "localSchema")
@@ -32,9 +39,12 @@ public class LocalSchemaColumn {
     public LocalSchemaColumn() {
     }
 
-    public LocalSchemaColumn(String name, ColumnType type, LocalSchema localSchema) {
+    public LocalSchemaColumn(long id, String name, String sourceName, ColumnType type, Operator transformation, LocalSchema localSchema) {
+        this.id = id;
         this.name = name;
+        this.sourceName = sourceName;
         this.type = type;
+        this.transformation = transformation;
         this.localSchema = localSchema;
     }
 
@@ -54,12 +64,28 @@ public class LocalSchemaColumn {
         this.name = name;
     }
 
+    public String getSourceName() {
+        return sourceName;
+    }
+
+    public void setSourceName(String sourceName) {
+        this.sourceName = sourceName;
+    }
+
     public ColumnType getType() {
         return type;
     }
 
     public void setType(ColumnType type) {
         this.type = type;
+    }
+
+    public Operator getTransformation() {
+        return transformation;
+    }
+
+    public void setTransformation(Operator transformation) {
+        this.transformation = transformation;
     }
 
     public LocalSchema getLocalSchema() {
@@ -74,7 +100,9 @@ public class LocalSchemaColumn {
     public String toString() {
         return "LocalSchemaColumn{" +
                 "name='" + name + '\'' +
+                "sourceName='" + sourceName + '\'' +
                 ", type=" + type +
+                ", transformation=" + transformation.name() +
                 ", id=" + id +
                 ", localSchema =" + localSchema.getName() +
                 '}';

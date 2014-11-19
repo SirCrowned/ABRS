@@ -1,7 +1,6 @@
 package pl.edu.agh.two.abrs.service.db;
 
 import pl.edu.agh.two.abrs.Row;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 
 import java.util.List;
 
@@ -23,7 +22,7 @@ public interface DbReaderService {
      * @return Columns list
      * @throws DbReaderException when connection with given table cannot be established
      */
-    List<LocalSchemaColumn> getColumns(ConnectionParams params, String tableName) throws DbReaderException;
+    List<String> getColumns(ConnectionParams params, String tableName) throws DbReaderException;
 
     /**
      * Extracts data from specified table
