@@ -9,10 +9,6 @@ public class Row {
 
     private final List<Object> fields;
 
-    public Row(Object... fields) {
-        this(Arrays.asList(fields));
-    }
-
     public Row(List<Object> fields) {
         this.fields = Collections.unmodifiableList(new ArrayList<>(fields));
     }

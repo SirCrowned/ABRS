@@ -57,7 +57,7 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
             Row row = rows.get(i);
             assertEquals(3, row.length());
 
-            assertEquals("" + i, row.get(0));
+            assertEquals(i, row.get(0));
             assertEquals("1-" + i, row.get(1));
             assertEquals("2-" + i, row.get(2));
         }
