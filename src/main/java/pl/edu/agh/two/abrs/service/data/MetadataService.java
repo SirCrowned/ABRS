@@ -9,6 +9,8 @@ import pl.edu.agh.two.abrs.model.SourceProperties;
 import pl.edu.agh.two.abrs.model.SourcePropertiesType;
 import pl.edu.agh.two.abrs.model.SourceType;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
+import pl.edu.agh.two.abrs.service.csv.CsvReadException;
+import pl.edu.agh.two.abrs.service.csv.CsvService;
 import pl.edu.agh.two.abrs.service.db.ConnectionParams;
 import pl.edu.agh.two.abrs.service.db.DbReaderException;
 import pl.edu.agh.two.abrs.service.db.DbReaderService;
@@ -29,13 +31,16 @@ public class MetadataService {
     @Autowired
     private DbReaderService dbSourceService;
 
+    @Autowired
+    private CsvService csvService;
+
     //TODO: implement services to retrieve metadata of CSV, XML or DB TABLE
-    public List<LocalSchemaColumn> getMetadata(long sourceId) throws DbReaderException {
+    public List<LocalSchemaColumn> getMetadata(long sourceId) throws DbReaderException, CsvReadException {
         Source source = sourceRepository.getOne(sourceId);
         return getColumnsMetadata(source);
     }
 
-    private List<LocalSchemaColumn> getColumnsMetadata(Source source) throws DbReaderException {
+    private List<LocalSchemaColumn> getColumnsMetadata(Source source) throws DbReaderException, CsvReadException {
 
         Map<SourcePropertiesType, String> properties = sourcePropertiesToMap(source.getSourceProperties());
         List<LocalSchemaColumn> columns;
@@ -44,6 +49,9 @@ public class MetadataService {
                 columns = dbSourceService.getColumns(
                         convertSourcePropertiesToConnectionParams(properties),
                         properties.get(SourcePropertiesType.TABLE));
+                break;
+            case CSV:
+                columns = csvService.getColumns(properties.get(SourcePropertiesType.URL), null);
                 break;
             default:
                 columns = new ArrayList<>();

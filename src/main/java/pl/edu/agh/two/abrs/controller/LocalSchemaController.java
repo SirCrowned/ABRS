@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
+import pl.edu.agh.two.abrs.service.csv.CsvReadException;
 import pl.edu.agh.two.abrs.service.data.MetadataService;
 import pl.edu.agh.two.abrs.service.db.DbReaderException;
 import pl.edu.agh.two.abrs.service.db.DbReaderService;
@@ -40,7 +41,7 @@ public class LocalSchemaController {
         List<LocalSchemaColumn> columns;
         try {
             columns = metaDataService.getMetadata(sourceId);
-        } catch (DbReaderException e) {
+        } catch (Exception e) {
             e.printStackTrace();
             return "ERROR";
         }

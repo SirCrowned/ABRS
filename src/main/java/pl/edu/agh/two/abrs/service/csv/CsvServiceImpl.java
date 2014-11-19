@@ -1,20 +1,25 @@
 package pl.edu.agh.two.abrs.service.csv;
 
+import org.springframework.stereotype.Service;
 import org.supercsv.cellprocessor.ift.CellProcessor;
 import org.supercsv.io.CsvListReader;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.model.ColumnType;
+import pl.edu.agh.two.abrs.model.LocalSchema;
+import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Service
 public class CsvServiceImpl implements CsvService {
 
     @Override
@@ -74,4 +79,10 @@ public class CsvServiceImpl implements CsvService {
 
     }
 
+    @Override
+    public List<LocalSchemaColumn> getColumns(String url, LocalSchema schema) throws CsvReadException{
+        List<LocalSchemaColumn> result = new ArrayList<>();
+        getHeaders(url).forEach(h -> result.add(new LocalSchemaColumn(h, ColumnType.STRING, schema)));
+        return result;
+    }
 }
