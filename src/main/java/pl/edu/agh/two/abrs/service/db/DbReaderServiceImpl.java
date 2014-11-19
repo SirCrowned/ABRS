@@ -14,6 +14,7 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class DbReaderServiceImpl implements DbReaderService {
@@ -55,9 +56,9 @@ public class DbReaderServiceImpl implements DbReaderService {
             ResultSetMetaData metaData = resultSet.getMetaData();
 
             while (resultSet.next()) {
-                List<String> fields = new ArrayList<>();
+                List<Object> fields = new ArrayList<>();
                 for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    fields.add(resultSet.getString(i + 1));
+                    fields.add(resultSet.getObject(i + 1));
                 }
                 rows.add(new Row(fields));
             }
