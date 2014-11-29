@@ -35,12 +35,26 @@
           <td th:text="${localSchema.id}"></td>
           <td th:text="${localSchema.name}"></td>
           <td th:text="${localSchema.source.name}"></td>
-          <td>
-            <div class="list" >
-              <dl class="dl-horizontal" th:each="column : ${localSchema.localSchemaColumn}">
-                <dt th:text="${column.name}"></dt>
-                <dd th:text="${column.type}" ></dd>
-              </dl>
+          <td style="width: 700px;">
+            <div class="list">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th scope="col">Column name</th>
+                    <th scope="col">Source column name</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Transformation</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr th:each="column : ${localSchema.localSchemaColumn}">
+                    <td th:text="${column.name}"></td>
+                    <td th:text="${column.sourceName}"></td>
+                    <td th:text="${column.type.toString()}"></td>
+                    <td th:text="${column.transformation}"></td>
+                  </tr>
+                </tbody>
+              </table>
             </div>
             <div class="edit-form" style="display: none">
               <form th:id="${'form-'+localSchema.id}" role="form">
@@ -141,8 +155,8 @@
           .on('click', '.btn.edit', function (event) {
             event.preventDefault();
             var $parent = $(this).closest('tr.schema-definition');
-            $('.list', $parent).slideUp();
-            $('.edit-form', $parent).slideDown();
+            $('.list', $parent).slideToggle();
+            $('.edit-form', $parent).slideToggle();
           })
           .on('click', '.btn.cancel', function (event) {
             event.preventDefault();

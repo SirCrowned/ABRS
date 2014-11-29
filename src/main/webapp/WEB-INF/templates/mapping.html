@@ -34,7 +34,6 @@
               <th scope="col">Column</th>
               <th scope="col">Type</th>
               <th scope="col">Transform</th>
-              <th scope="col">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -42,15 +41,11 @@
               <tr th:each="column : ${localSchema.localSchemaColumn}">
                 <td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>
                 <td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>
-                <td th:attr="data-source-id=${localSchema.source.id}">Empty</td>
-                <td th:attr="data-source-id=${localSchema.source.id}">
-                  <button type="button" class="btn btn-info edit" th:attr="data-source-id=${localSchema.source.id}">Edit</button>
-                </td>
+                <td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>
               </tr>
             </div>
           </tbody>
         </table>
-        <button type="button" class="btn btn-default" id="add" data-toggle="modal" data-target="#addColumn">Add</button>
       </div>
       <div class="col-sm-3">
         <table id="global" class="table table-striped">
