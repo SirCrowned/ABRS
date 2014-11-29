@@ -70,6 +70,17 @@ public class LocalSchema {
         this.localSchemaColumn = columns;
     }
 
+    public LocalSchemaColumn removeColumn(String name) {
+        for (LocalSchemaColumn column : localSchemaColumn) {
+            if (column.getName().equals(name)) {
+                localSchemaColumn.remove(column);
+                return column;
+            }
+        }
+
+        return null;
+    }
+
     @Override
     public String toString() {
         return "LocalSchema{" +

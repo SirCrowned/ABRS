@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity(name = "localSchemaColumn")
 @Table(name = "localSchemaColumn")
@@ -30,13 +31,24 @@ public class LocalSchemaColumn {
     private ColumnType type;
 
     @Column(name = "transformation", nullable = false)
-    private Operator transformation;
+    private String transformation;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "localSchema")
     private LocalSchema localSchema;
 
+    @Transient
+    private Operator operator;
+
     public LocalSchemaColumn() {
+    }
+
+    public LocalSchemaColumn(String name, String sourceName, ColumnType type, Operator transformation) {
+        this.name = name;
+        this.sourceName = sourceName;
+        this.type = type;
+        this.operator = transformation;
+        this.transformation = transformation.name();
     }
 
     public LocalSchemaColumn(long id, String name, String sourceName, ColumnType type, Operator transformation, LocalSchema localSchema) {
@@ -44,7 +56,8 @@ public class LocalSchemaColumn {
         this.name = name;
         this.sourceName = sourceName;
         this.type = type;
-        this.transformation = transformation;
+        this.operator = transformation;
+        this.transformation = transformation.name();
         this.localSchema = localSchema;
     }
 
@@ -80,12 +93,17 @@ public class LocalSchemaColumn {
         this.type = type;
     }
 
-    public Operator getTransformation() {
+    public String getTransformation() {
         return transformation;
     }
 
     public void setTransformation(Operator transformation) {
-        this.transformation = transformation;
+        this.operator = transformation;
+        this.transformation = transformation.name();
+    }
+
+    public Operator getOperator() {
+        return operator;
     }
 
     public LocalSchema getLocalSchema() {
@@ -102,7 +120,7 @@ public class LocalSchemaColumn {
                 "name='" + name + '\'' +
                 "sourceName='" + sourceName + '\'' +
                 ", type=" + type +
-                ", transformation=" + transformation.name() +
+                ", transformation=" + transformation +
                 ", id=" + id +
                 ", localSchema =" + localSchema.getName() +
                 '}';

@@ -3,8 +3,7 @@ package pl.edu.agh.two.abrs.service.db;
 import org.junit.Before;
 import org.junit.Test;
 import pl.edu.agh.two.abrs.Row;
-import pl.edu.agh.two.abrs.model.ColumnType;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
+import pl.edu.agh.two.abrs.model.SourceColumn;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -85,18 +84,13 @@ public class DbReaderServiceImplTest extends EmbeddedH2Test {
     public void check_database_table_columns_names() throws Exception {
 
         DbReaderServiceImpl dbConnectorService = new DbReaderServiceImpl();
-        List<LocalSchemaColumn> columns = dbConnectorService.getColumns(connectionParams(), "TEST");
+        List<SourceColumn> columns = dbConnectorService.getColumns(connectionParams(), "TEST");
 
         assertEquals(3, columns.size());
 
         assertEquals("ID", columns.get(0).getName());
-        assertEquals(ColumnType.INTEGER, columns.get(0).getType());
-
         assertEquals("COL1", columns.get(1).getName());
-        assertEquals(ColumnType.STRING, columns.get(1).getType());
-
         assertEquals("COL2", columns.get(2).getName());
-        assertEquals(ColumnType.STRING, columns.get(2).getType());
     }
 
     private ConnectionParams connectionParams() {

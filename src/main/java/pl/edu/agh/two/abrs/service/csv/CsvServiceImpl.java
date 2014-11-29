@@ -7,6 +7,7 @@ import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.model.ColumnType;
+import pl.edu.agh.two.abrs.model.SourceColumn;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -77,9 +78,9 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
-    public List<String> getColumns(String url) throws CsvReadException{
-        List<String> result = new ArrayList<>();
-        getHeaders(url).forEach(h -> result.add(h));
+    public List<SourceColumn> getColumns(String url) throws CsvReadException{
+        List<SourceColumn> result = new ArrayList<>();
+        getHeaders(url).forEach(h -> result.add(new SourceColumn(h, ColumnType.STRING)));
         return result;
     }
 }

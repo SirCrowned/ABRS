@@ -3,7 +3,7 @@ package pl.edu.agh.two.abrs.service.db;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.model.ColumnType;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
+import pl.edu.agh.two.abrs.model.SourceColumn;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -68,8 +68,8 @@ public class DbReaderServiceImpl implements DbReaderService {
         }
     }
 
-    public List<String> getColumns(ConnectionParams params, String tableName) throws DbReaderException {
-        List<String> columns = new ArrayList<>();
+    public List<SourceColumn> getColumns(ConnectionParams params, String tableName) throws DbReaderException {
+        List<SourceColumn> columns = new ArrayList<>();
 
         try (Connection connection = connect(params)) {
             Statement statement = connection.createStatement();
@@ -79,33 +79,30 @@ public class DbReaderServiceImpl implements DbReaderService {
             ResultSetMetaData metadata = res.getMetaData();
 
             for (int i = 1; i <= metadata.getColumnCount(); i++) {
-                columns.add(metadata.getColumnLabel(i));
+                columns.add(new SourceColumn(metadata.getColumnLabel(i), getColumnType(metadata.getColumnType(i))));
             }
         } catch (SQLException e) {
             throw new DbReaderException(e);
         }
+
         return columns;
     }
 
-    private LocalSchemaColumn createLocalSchemaColumn(String name, int type) throws DbReaderException {
-        ColumnType columnType;
+    private ColumnType getColumnType(int type) throws DbReaderException {
         switch (type) {
             case Types.BOOLEAN:
-                columnType = ColumnType.BOOLEAN;
-                break;
+                return ColumnType.BOOLEAN;
             case Types.TINYINT:
             case Types.SMALLINT:
             case Types.INTEGER:
             case Types.BIGINT:
-                columnType = ColumnType.INTEGER;
-                break;
+                return ColumnType.INTEGER;
             case Types.FLOAT:
             case Types.REAL:
             case Types.DOUBLE:
             case Types.NUMERIC:
             case Types.DECIMAL:
-                columnType = ColumnType.DOUBLE;
-                break;
+                return ColumnType.DOUBLE;
             case Types.CHAR:
             case Types.VARCHAR:
             case Types.LONGVARCHAR:
@@ -114,13 +111,11 @@ public class DbReaderServiceImpl implements DbReaderService {
             case Types.LONGNVARCHAR:
             case Types.CLOB:
             case Types.NCLOB:
-                columnType = ColumnType.STRING;
-                break;
+                return ColumnType.STRING;
             case Types.DATE:
             case Types.TIMESTAMP:
             case Types.TIME:
-                columnType = ColumnType.DATE;
-                break;
+                return ColumnType.DATE;
             // Not supported below that line//
             case Types.BINARY:
             case Types.VARBINARY:
@@ -138,7 +133,5 @@ public class DbReaderServiceImpl implements DbReaderService {
             default:
                 throw new DbReaderException("Not supported JDBC type (java.sql.Types): " + type + ".");
         }
-
-        return null;//new LocalSchemaColumn(name, columnType, null);
     }
 }
