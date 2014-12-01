@@ -9,12 +9,8 @@
     <div th:include="fragments :: header"></div>
 
     <div class="container">
-      <div class="alert alert-success" role="alert" id="ok" style="display: none">
-        Creating source successful.
-      </div>
-      <div class="alert alert-danger" role="alert" id="error" style="display: none">
-        Error on creating source.
-      </div>
+      <div class="alert alert-success" role="alert" id="ok" style="display: none"></div>
+      <div class="alert alert-danger" role="alert" id="error" style="display: none"></div>
       <h1>Create new source:</h1>
 
       <form class="form-horizontal" role="form">
@@ -45,7 +41,7 @@
             </div>
           </div>
         </div>
-        <div id="db" style="display: none">
+        <div class="db" style="display: none">
           <div class="form-group">
             <label for="host" class="col-sm-2 control-label">Host:</label>
 
@@ -92,6 +88,7 @@
         <div class="form-group">
           <div class="col-sm-offset-2 col-sm-6">
             <button type="button" class="btn btn-default" id="create">Create</button>
+            <button type="button" class="btn btn-default db" id="test-connection" style="display: none">Test Connection</button>
           </div>
         </div>
       </form>
@@ -100,11 +97,48 @@
       $('#type').on('change', function () {
         if ($(this).val() == 'DATABASE') {
           $('#nodb').hide();
-          $('#db').show();
+          $('.db').show();
         } else {
-          $('#db').hide();
+          $('.db').hide();
           $('#nodb').show();
         }
+      });
+
+      function sourceCreatedOk() {
+        alert('ok', 'Creating source successful.');
+      }
+
+      function sourceCreatedError() {
+        alert('error', 'Error on creating source.');
+      }
+
+      function alert(id, text) {
+        var box = $('#' + id);
+        box.text(text);
+        box.show();
+        setTimeout(function () {
+          box.hide();
+        }, 5000);
+      }
+
+      $('#test-connection').on('click', function () {
+        $.ajax({
+          url: "http://localhost:8080/source/test/db/",
+          type: "POST",
+          data: {
+            host: $('#host').val(),
+            port: $('#port').val(),
+            user: $('#user').val(),
+            password: $('#password').val(),
+            database: $('#database').val()
+          }
+        }).done(function (data) {
+          if (data == "OK") {
+            alert('ok', 'Connection test successful.');
+          } else {
+            alert('error', data);
+          }
+        })
       });
 
       $('#create').on('click', function () {
@@ -123,15 +157,9 @@
             }
           }).done(function (data) {
             if (data == "OK") {
-              $("#ok").show();
-              setTimeout(function () {
-                $("#ok").hide();
-              }, 5000);
+              sourceCreatedOk();
             } else {
-              $("#error").show();
-              setTimeout(function () {
-                $("#error").hide();
-              }, 5000);
+              sourceCreatedError();
             }
           })
         } else {
@@ -145,15 +173,9 @@
             }
           }).done(function (data) {
             if (data == "OK") {
-              $("#ok").show();
-              setTimeout(function () {
-                $("#ok").hide();
-              }, 5000);
+              sourceCreatedOk();
             } else {
-              $("#error").show();
-              setTimeout(function () {
-                $("#error").hide();
-              }, 5000);
+              sourceCreatedError();
             }
           })
         }

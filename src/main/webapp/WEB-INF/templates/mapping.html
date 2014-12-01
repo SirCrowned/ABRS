@@ -1,0 +1,227 @@
+<html xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"/>
+  </head>
+  <body>
+
+    <div th:include="fragments :: header"></div>
+    <div class="container">
+      <h1>Create mapping</h1>
+
+      <div class="col-sm-3">
+        <table id="source" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" th:cols="2">Source</th>
+              <th scope="col">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="source : ${sourceList}">
+              <td th:text="${source.id}" th:attr="data-id=${source.id}"></td>
+              <td th:text="${source.name}" th:attr="data-id=${source.id}"></td>
+              <td th:text="${source.sourceType}" th:attr="data-id=${source.id}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6">
+        <table id="column" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Column</th>
+              <th scope="col">Type</th>
+              <th scope="col">Transform</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div th:each="localSchema : ${localSchemaList}">
+              <tr th:each="column : ${localSchema.localSchemaColumn}">
+                <td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>
+                <td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>
+                <td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>
+              </tr>
+            </div>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-3">
+        <table id="global" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Local</th>
+              <th scope="col">Global</th>
+              <th scope="col">Type</th>
+              <th scope="col"></th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="mapping : ${mappings}" th:attr="data-id=${mapping.id}">
+              <td th:text="${mapping.from}"></td>
+              <td th:text="${mapping.to}"></td>
+              <td th:text="${mapping.type}"></td>
+              <td>
+                <a href="#" class="remove btn btn-danger" th:attr="data-id=${mapping.id}">Remove</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-default" id="addGlobal" data-toggle="modal" data-target="#addMapping">Add</button>
+        <button type="button" class="btn btn-default" id="save">Save</button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addColumn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalLabel">Add column</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="name" class="col-sm-4 control-label">Name:</label>
+
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="name" placeholder="name"/>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="transform" class="col-sm-4 control-label">Select transform:</label>
+
+                <div class="col-sm-8">
+                  <select class="form-control" id="transform">
+                    <option selected="selected">Transform 1</option>
+                    <option>Transform 2</option>
+                    <option>Transform 3</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="args" class="col-sm-4 control-label">Args:</label>
+
+                <div class="col-sm-8">
+                  <input type="text" class="form-control" id="args" placeholder="Args"/>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="closeAddColumn" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="addColumnSave">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="addMapping" tabindex="-1" role="dialog" aria-labelledby="myModalGlobalLabel" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            <h4 class="modal-title" id="myModalGlobalLabel">Add mapping</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-horizontal" role="form">
+              <div class="form-group">
+                <label for="local" class="col-sm-4 control-label">Select local:</label>
+
+                <div class="col-sm-8">
+                  <select class="form-control" id="local">
+                    <option selected="selected">ColumnOne</option>
+                    <div th:each="localSchema : ${localSchemaList}">
+                      <div th:each="column : ${localSchema.localSchemaColumn}">
+                        <option th:text="${column.name}"></option>
+                      </div>
+                    </div>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="globalCol" class="col-sm-4 control-label">Select global:</label>
+
+                <div class="col-sm-8">
+                  <select class="form-control" id="globalCol">
+                    <option selected="selected">Global One</option>
+                    <option>Global Two</option>
+                    <option>Global Three</option>
+                  </select>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" id="closeAddGlobal" data-dismiss="modal">Close</button>
+            <button type="button" class="btn btn-primary" id="addGlobalSave">Save changes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script type="text/javascript">
+      //<![CDATA[
+      jQuery(function ($) {
+        $('#source td').click(function (e) {
+          var id = $(this).data('id')
+
+          $("#column td").removeClass('success');
+
+          var elements = $("#column td").filter(function () {
+            return $(this).data("source-id") == id;
+          });
+
+          $(elements).addClass('success');
+
+          e.stopPropagation();
+        });
+
+        $('#addColumnSave').click(function (e) {
+
+          var tr = $("<tr>");
+          var td1 = $("<td>").appendTo(tr);
+          td1.html($("#name").val());
+
+          var td2 = $("<td>").appendTo(tr);
+          td2.html("ANY");
+
+          var td3 = $("<td>").appendTo(tr);
+          td3.html($("#transform").val());
+
+          var td4 = $("<td>").appendTo(tr);
+          td4.html("EDIT");
+
+          tr.appendTo('#column tbody');
+
+
+          $('#closeAddColumn').click();
+          e.stopPropagation();
+        });
+
+        $('#addGlobalSave').click(function (e) {
+
+          var tr = $("<tr>");
+          var td1 = $("<td>").appendTo(tr);
+          td1.html($("#local").val());
+
+          var td2 = $("<td>").appendTo(tr);
+          td2.html($("#globalCol").val());
+
+          var td3 = $("<td>").appendTo(tr);
+          td3.html("ANY");
+
+          tr.appendTo('#global tbody');
+
+          $('#closeAddGlobal').click();
+          e.stopPropagation();
+        });
+
+      });
+      //]]>
+    </script>
+  </body>
+</html>
