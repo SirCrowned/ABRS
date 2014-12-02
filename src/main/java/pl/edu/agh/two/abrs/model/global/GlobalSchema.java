@@ -32,4 +32,12 @@ public class GlobalSchema {
     public Long getId() {
         return id;
     }
+
+    public void addTable(GlobalSchemaTable globalSchemaTable){
+        tables.add(globalSchemaTable);
+    }
+
+    public void removeTable(String tableName){
+        new ArrayList<>(tables).stream().filter(table -> table.getName().equals(tableName)).forEach(tables::remove);
+    }
 }
