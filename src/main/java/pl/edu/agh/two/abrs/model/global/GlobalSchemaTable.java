@@ -8,7 +8,7 @@ import java.util.List;
 public class GlobalSchemaTable {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
     @OneToMany(orphanRemoval = true)
@@ -16,10 +16,11 @@ public class GlobalSchemaTable {
 
     private String name;
 
-    public GlobalSchemaTable(){};
+    public GlobalSchemaTable() {
+    }
 
     public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns) {
-        if(columns==null || name==null){
+        if (columns == null || name == null) {
             throw new IllegalArgumentException();
         }
         this.columns = columns;

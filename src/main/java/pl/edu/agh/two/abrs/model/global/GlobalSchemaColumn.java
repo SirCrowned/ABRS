@@ -16,10 +16,11 @@ public class GlobalSchemaColumn {
     private ColumnType columnType;
     private String name;
 
-    public GlobalSchemaColumn(){};
+    public GlobalSchemaColumn() {
+    }
 
     public GlobalSchemaColumn(ColumnType columnType, String name) {
-        if(columnType == null || name== null){
+        if (columnType == null || name == null) {
             throw new IllegalArgumentException();
         }
         this.columnType = columnType;

@@ -32,9 +32,7 @@ import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration
@@ -66,35 +64,35 @@ public class GlobalSchemaDBIntegrationTest {
 
     @Test
     @Transactional
-    public void cascade_saving(){
-        ArrayList<GlobalSchemaColumn> columns= new ArrayList<>();
-        columns.add(new GlobalSchemaColumn(ColumnType.BOOLEAN,"col1"));
+    public void cascade_saving() {
+        ArrayList<GlobalSchemaColumn> columns = new ArrayList<>();
+        columns.add(new GlobalSchemaColumn(ColumnType.BOOLEAN, "col1"));
         ArrayList<GlobalSchemaTable> tables = new ArrayList<>();
-        tables.add(new GlobalSchemaTable("Tabela",columns));
-        tables.add(new GlobalSchemaTable("Tablea2",new ArrayList<>()));
+        tables.add(new GlobalSchemaTable("Tabela", columns));
+        tables.add(new GlobalSchemaTable("Tablea2", new ArrayList<>()));
         GlobalSchema schema = new GlobalSchema(tables);
         service.updateGlobalSchema(schema);
         GlobalSchema newSchema = service.getGlobalSchema();
-        assertEquals(newSchema.getTables().size(),2);
-        assertEquals(newSchema.getTables().get(0).getColumns().size(),1);
+        assertEquals(newSchema.getTables().size(), 2);
+        assertEquals(newSchema.getTables().get(0).getColumns().size(), 1);
     }
 
-    public void cascade_removing(){
+    public void cascade_removing() {
         service.deleteGlobalSchema();
 
-        ArrayList<GlobalSchemaColumn> columns= new ArrayList<>();
-        columns.add(new GlobalSchemaColumn(ColumnType.BOOLEAN,"col1"));
+        ArrayList<GlobalSchemaColumn> columns = new ArrayList<>();
+        columns.add(new GlobalSchemaColumn(ColumnType.BOOLEAN, "col1"));
         ArrayList<GlobalSchemaTable> tables = new ArrayList<>();
-        tables.add(new GlobalSchemaTable("Tabela",columns));
-        tables.add(new GlobalSchemaTable("Tablea2",new ArrayList<>()));
+        tables.add(new GlobalSchemaTable("Tabela", columns));
+        tables.add(new GlobalSchemaTable("Tablea2", new ArrayList<>()));
         GlobalSchema schema = new GlobalSchema(tables);
         service.updateGlobalSchema(schema);
         GlobalSchema newSchema = service.getGlobalSchema();
 
         service.deleteGlobalSchema();
 
-        assertEquals(globalSchemaColumnRepository.findAll().size(),0);
-        assertEquals(globalSchemaTableRepository.findAll().size(),0);
+        assertEquals(globalSchemaColumnRepository.findAll().size(), 0);
+        assertEquals(globalSchemaTableRepository.findAll().size(), 0);
     }
 
     @Configuration
