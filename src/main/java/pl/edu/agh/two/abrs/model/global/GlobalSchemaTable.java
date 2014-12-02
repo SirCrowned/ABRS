@@ -11,7 +11,7 @@ public class GlobalSchemaTable {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaColumn> columns;
 
     private String name;
