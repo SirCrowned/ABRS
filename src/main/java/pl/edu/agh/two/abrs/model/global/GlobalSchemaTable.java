@@ -16,6 +16,8 @@ public class GlobalSchemaTable {
 
     private String name;
 
+    public GlobalSchemaTable(){};
+
     public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns) {
         if(columns==null || name==null){
             throw new IllegalArgumentException();
