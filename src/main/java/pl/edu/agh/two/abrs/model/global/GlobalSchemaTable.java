@@ -16,11 +16,12 @@ public class GlobalSchemaTable {
 
     private String name;
 
-    public GlobalSchemaTable(List<GlobalSchemaColumn> columns) {
-        if(columns==null){
+    public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns) {
+        if(columns==null || name==null){
             throw new IllegalArgumentException();
         }
         this.columns = columns;
+        this.name = name;
     }
 
     public List<GlobalSchemaColumn> getColumns() {
