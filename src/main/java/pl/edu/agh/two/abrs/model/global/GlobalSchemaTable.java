@@ -14,6 +14,8 @@ public class GlobalSchemaTable {
     @OneToMany(orphanRemoval = true)
     private List<GlobalSchemaColumn> columns;
 
+    private String name;
+
     public GlobalSchemaTable(List<GlobalSchemaColumn> columns) {
         if(columns==null){
             throw new IllegalArgumentException();
@@ -23,5 +25,13 @@ public class GlobalSchemaTable {
 
     public List<GlobalSchemaColumn> getColumns() {
         return new ArrayList<>(columns);
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
     }
 }

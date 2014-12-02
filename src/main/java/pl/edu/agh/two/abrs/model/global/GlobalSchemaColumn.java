@@ -31,4 +31,8 @@ public class GlobalSchemaColumn {
     public ColumnType getColumnType() {
         return columnType;
     }
+
+    public Long getId() {
+        return id;
+    }
 }

@@ -28,4 +28,8 @@ public class GlobalSchema {
     public List<GlobalSchemaTable> getTables() {
         return new ArrayList<>(tables);
     }
+
+    public Long getId() {
+        return id;
+    }
 }
