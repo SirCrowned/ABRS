@@ -1,0 +1,314 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+  <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+  <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div th:include="fragments :: header"></div>
+<div class="container">
+  <h1>Global schema</h1>
+
+  <div class="col-sm-4">
+    <div class="panel panel-default">
+      <div class="panel-heading">Tables</div>
+      <ul class="list-group">
+        <li class="tables-list-element list-group-item" th:each="table : ${tablesList}" th:text="${table.name}" th:attr="data-table-id=${table.id}"></li>
+      </ul>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createTable">Create table</button>
+
+    <h6>&nbsp;</h6>
+
+    <div class="panel panel-default">
+      <div class="panel-heading">Relations</div>
+      <table class="table table-striped">
+        <tbody>
+          <tr class="relation-row" th:each="relation : ${relationsList}">
+            <td class="relation-from" th:text="${relation.from}"></td>
+            <td class="relation-to" th:text="${relation.to}"></td>
+            <td>
+              <button type="button" class="remove-relation-button btn btn-danger pull-right"><span aria-hidden="true">&times;</span></button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createRelation">Create relation</button>
+  </div>
+
+  <div class="panel-group col-sm-8">
+    <div class="table-details-panel panel panel-default" th:each="table : ${tablesList}" th:attr="data-table-id=${table.id},data-table-name=${table.name}">
+      <div class="panel-heading clearfix">
+        <h4 class="panel-title pull-left" th:text="'Table: ' + ${table.name}"></h4>
+        <button type="button" class="btn btn-danger pull-right" th:attr="data-table-id=${table.id}">Remove</button>
+      </div>
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Column</th>
+            <th>Type</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr th:each="column,iterStat : ${table.columns}">
+            <td th:text="${iterStat.count}"></td>
+            <td th:text="${column.name}"></td>
+            <td th:text="${column.type}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createTable" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create table</h4>
+      </div>
+      <div class="modal-body">
+        <input type="text" class="form-control" id="table-name" placeholder="Table name"/>
+        <table class="table table-striped">
+          <thead>
+            <tr>
+              <th>Column</th>
+              <th>Type</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="columns-table">
+          </tbody>
+        </table>
+        <button type="button" class="btn btn-default" id="addColumnButton">Add column</button>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveTableButton">Save table</button>
+        <button type="button" class="btn btn-default" id="cancelButton" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <table id="columns-table-prototype" style="display: none;">
+    <tr class="columns-table-row">
+      <td>
+        <input type="text" class="form-control" placeholder="Column name"/>
+      </td>
+      <td>
+        <select class="form-control">
+          <option th:each="type : ${columnTypes}" th:text="${type}"></option>
+        </select>
+      </td>
+      <td>
+        <button type="button" class="btn btn-danger">Remove</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="createRelation" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+        <h4 class="modal-title" id="myModalLabel">Create relation</h4>
+      </div>
+      <div class="modal-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Table</th>
+              <th>Column</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>From</td>
+              <td>
+                <select id="from-table-drop-down" class="form-control">
+                  <option th:each="table : ${tablesList}" th:text="${table.name}"></option>
+                </select>
+              </td>
+              <td>
+                <select id="from-column-drop-down" class="form-control">
+                  <option th:each="column : ${tablesList[0].columns}" th:text="${column.name}"></option>
+                </select>
+              </td>
+            </tr>
+            <tr>
+              <td>To</td>
+              <td>
+                <select id="to-table-drop-down" class="form-control">
+                  <option th:each="table : ${tablesList}" th:text="${table.name}"></option>
+                </select>
+              </td>
+              <td>
+                <select id="to-column-drop-down" class="form-control">
+                  <option th:each="column : ${tablesList[0].columns}" th:text="${column.name}"></option>
+                </select>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="saveRelationButton">Save table</button>
+        <button type="button" class="btn btn-default" id="cancelButton" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+  <table id="columns-table-prototype" style="display: none;">
+    <tr class="columns-table-row">
+      <td>
+        <input type="text" class="form-control" placeholder="Column name"/>
+      </td>
+      <td>
+        <select class="form-control">
+          <option th:each="type : ${columnTypes}" th:text="${type}"></option>
+        </select>
+      </td>
+      <td>
+        <button type="button" class="btn btn-danger">Remove</button>
+      </td>
+    </tr>
+  </table>
+</div>
+
+<script th:inline="javascript">
+  //<![CDATA[
+  jQuery(function ($) {
+    $(".tables-list-element").click(function () {
+      var sameTableClicked = $(this).hasClass("list-group-item-info");
+
+      $(".tables-list-element").removeClass("list-group-item-info");
+      var tableDetailsPanels = $(".table-details-panel");
+      tableDetailsPanels.removeClass("panel-primary");
+
+      if (!sameTableClicked) {
+        $(this).addClass("list-group-item-info");
+        var id = $(this).data("table-id");
+
+        var elements = tableDetailsPanels.filter(function () {
+          return $(this).data("table-id") == id;
+        });
+
+        $(elements).addClass("panel-primary");
+      }
+    });
+
+    var sendPost = function (url, data) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: 'application/json',
+        data: data
+      }).done(function (data) {
+        if (data == "OK") {
+          location.reload();
+        } else {
+          alert(data);
+        }
+      })
+    };
+
+    $(".table-details-panel").find("button").click(function () {
+      var tableName = $(this).data("table-name");
+      var url = /*[[@{/globalSchema/table/remove}]]*/ "/globalSchema/table/remove";
+      sendPost(url + "/" + tableName);
+    });
+
+    var removeColumnHandler = function () {
+      $(this).closest("tr").remove();
+    };
+
+    $("#addColumnButton").click(function () {
+      var newRow = $("#columns-table-prototype").find("tr").clone();
+      var removeButton = newRow.find("button");
+      removeButton.off("click");
+      removeButton.click(removeColumnHandler);
+      newRow.appendTo("#columns-table");
+    });
+
+    $("#saveTableButton").click(function () {
+      var tableName = $("#table-name").val();
+      var columns = [];
+
+      var columnRows = $("#columns-table").find(".columns-table-row");
+      columnRows.each(function () {
+        columns.push({
+          name: $(this).find("input").val(),
+          type: $(this).find("select").val()
+        })
+      });
+
+      var url = /*[[@{/globalSchema/table/add}]]*/ "/globalSchema/table/add";
+      var data = JSON.stringify({
+        name: tableName,
+        columns: columns
+      });
+      sendPost(url, data);
+    });
+
+    var tablesList = /*[[${tablesList}]]*/ [];
+    var tables = {};
+    tablesList.forEach(function (e) {
+      tables[e.name] = e.columns;
+    });
+
+    var tableDropDownChangeHandler = function (columnDropDown) {
+      return function () {
+        var chosenTable = $(this).val();
+        columnDropDown.empty();
+        tables[chosenTable].forEach(function (column) {
+          columnDropDown.append($("<option></option>").text(column.name));
+        });
+      }
+    };
+
+    $("#from-table-drop-down").change(tableDropDownChangeHandler($("#from-column-drop-down")));
+    $("#to-table-drop-down").change(tableDropDownChangeHandler($("#to-column-drop-down")));
+
+    $("#saveRelationButton").click(function () {
+      var relation = JSON.stringify({
+        fromTable: $("#from-table-drop-down").val(),
+        fromColumn: $("#from-column-drop-down").val(),
+        toTable: $("#to-table-drop-down").val(),
+        toColumn: $("#to-column-drop-down").val()
+      });
+
+      var url = /*[[@{/globalSchema/relation/add}]]*/ "/globalSchema/relation/add";
+      sendPost(url, relation);
+    });
+
+    $(".remove-relation-button").click(function () {
+      var relationRow = $(this).closest("tr");
+      var relation = JSON.stringify({
+        from: relationRow.find(".relation-from").text(),
+        to: relationRow.find(".relation-to").text()
+      });
+
+      var url = /*[[@{/globalSchema/relation/remove}]]*/ "/globalSchema/relation/remove";
+      sendPost(url, relation);
+    });
+
+    $(".relation-row").click(function(){
+      var from = $(this).find(".relation-from").text();
+      var fromTable = from.split(".")[0];
+      var fromColumn = from.split(".")[1];
+
+      var to = $(this).find(".relation-to").text();
+      var toTable = from.split(".")[0];
+      var toColumn = from.split(".")[1];
+    });
+
+  });
+  //]]>
+</script>
+</body>
+</html>
