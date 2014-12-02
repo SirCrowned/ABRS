@@ -34,7 +34,6 @@
               <th scope="col">Column</th>
               <th scope="col">Type</th>
               <th scope="col">Transform</th>
-              <th scope="col">Edit</th>
             </tr>
           </thead>
           <tbody>
@@ -42,15 +41,11 @@
               <tr th:each="column : ${localSchema.localSchemaColumn}">
                 <td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>
                 <td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>
-                <td th:attr="data-source-id=${localSchema.source.id}">Empty</td>
-                <td th:attr="data-source-id=${localSchema.source.id}">
-                  <button type="button" class="btn btn-info edit" th:attr="data-source-id=${localSchema.source.id}">Edit</button>
-                </td>
+                <td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>
               </tr>
             </div>
           </tbody>
         </table>
-        <button type="button" class="btn btn-default" id="add" data-toggle="modal" data-target="#addColumn">Add</button>
       </div>
       <div class="col-sm-3">
         <table id="global" class="table table-striped">
@@ -62,75 +57,18 @@
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
-            </tr>
-            <tr>
-              <td>A_1</td>
-              <td>A_2</td>
-              <td>INT</td>
+            <tr th:each="mapping : ${mappings}" th:attr="data-id=${mapping.id}">
+              <td th:text="${mapping.from}"></td>
+              <td th:text="${mapping.to}"></td>
+              <td th:text="${mapping.type}"></td>
+              <td>
+                <a href="#" class="remove btn btn-danger" th:attr="data-id=${mapping.id}">Remove</a>
+              </td>
             </tr>
           </tbody>
         </table>
         <button type="button" class="btn btn-default" id="addGlobal" data-toggle="modal" data-target="#addMapping">Add</button>
         <button type="button" class="btn btn-default" id="save">Save</button>
-      </div>
-    </div>
-
-    <!-- Modal -->
-    <div class="modal fade" id="addColumn" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            <h4 class="modal-title" id="myModalLabel">Add column</h4>
-          </div>
-          <div class="modal-body">
-            <form class="form-horizontal" role="form">
-              <div class="form-group">
-                <label for="name" class="col-sm-4 control-label">Name:</label>
-
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="name" placeholder="name"/>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="transform" class="col-sm-4 control-label">Select transform:</label>
-
-                <div class="col-sm-8">
-                  <select class="form-control" id="transform">
-                    <option selected="selected">Transform 1</option>
-                    <option>Transform 2</option>
-                    <option>Transform 3</option>
-                  </select>
-                </div>
-              </div>
-              <div class="form-group">
-                <label for="args" class="col-sm-4 control-label">Args:</label>
-
-                <div class="col-sm-8">
-                  <input type="text" class="form-control" id="args" placeholder="Args"/>
-                </div>
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" id="closeAddColumn" data-dismiss="modal">Close</button>
-            <button type="button" class="btn btn-primary" id="addColumnSave">Save changes</button>
-          </div>
-        </div>
       </div>
     </div>
 
@@ -149,7 +87,6 @@
 
                 <div class="col-sm-8">
                   <select class="form-control" id="local">
-                    <option selected="selected">ColumnOne</option>
                     <div th:each="localSchema : ${localSchemaList}">
                       <div th:each="column : ${localSchema.localSchemaColumn}">
                         <option th:text="${column.name}"></option>
@@ -193,28 +130,6 @@
 
           $(elements).addClass('success');
 
-          e.stopPropagation();
-        });
-
-        $('#addColumnSave').click(function (e) {
-
-          var tr = $("<tr>");
-          var td1 = $("<td>").appendTo(tr);
-          td1.html($("#name").val());
-
-          var td2 = $("<td>").appendTo(tr);
-          td2.html("ANY");
-
-          var td3 = $("<td>").appendTo(tr);
-          td3.html($("#transform").val());
-
-          var td4 = $("<td>").appendTo(tr);
-          td4.html("EDIT");
-
-          tr.appendTo('#column tbody');
-
-
-          $('#closeAddColumn').click();
           e.stopPropagation();
         });
 

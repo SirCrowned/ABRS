@@ -1,15 +1,150 @@
+<!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
   <head>
-    <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js}"></script>
     <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css}" rel="stylesheet"/>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js}"></script>
+    <script th:src="@{http://localhost:8080/resources/js/jquery.jsPlumb-1.7.2.js}"></script>
     <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+
+    <style type="text/css">
+      #container {
+        border: 1px solid gray;
+        width: 1000px;
+        height: 500px;
+      }
+
+      .item {
+        position: relative;
+        border: 1px solid black;
+        background-color: #ddddff;
+        width: 70px;
+        height: 70px;
+      }
+
+      .title {
+        padding: 10px;
+        cursor: move;
+      }
+
+      .connect {
+        position: absolute;
+        top: 50px;
+        left: 30px;
+        width: 10px;
+        height: 10px;
+        border: 1px solid black;
+        background-color: greenyellow;
+        cursor: pointer;
+      }
+
+      .labelClass {
+        border: 1px solid black;
+        background-color: #ddddff;
+      }
+    </style>
+
   </head>
   <body>
-
     <div th:include="fragments :: header"></div>
-
-    <div class="container">
-      <h1>Hello world!</h1>
-    </div>
+    <div id="container"/>
   </body>
+
+  <script type="text/javascript" th:inline="javascript">
+    /*<![CDATA[*/
+    var duplicateConnections = 0;
+    var labelCss = {
+      cssClass:"labelClass"
+    };
+
+    jsPlumb.ready(function () {
+      jsPlumb.setContainer($('#container'));
+
+      var i = 0;
+      var sources = [];
+
+      $('#container').dblclick(function (e) {
+        var source = $('<div>').attr('id', 'source' + i).addClass('item');
+        sources.push(source);
+
+        source.bind("dblclick", function(connection, originalEvent) {
+          sources.splice(sources.indexOf(source), 1);
+        });
+
+        var title = $('<div>').addClass('title');
+
+        var stateName = $('<input>').attr('type', 'text');
+        title.append(stateName);
+
+        var connect = $('<div>').addClass('connect');
+
+        source.css({
+          'position': 'absolute',
+          'top': e.pageY,
+          'left': e.pageX
+        });
+
+        source.append(title);
+        source.append(connect);
+
+        $('#container').append(source);
+        jsPlumb.makeTarget(source, {
+          anchor: 'Continuous'
+        });
+
+        jsPlumb.makeSource(connect, {
+          parent: source,
+          anchor: 'Continuous'
+        });
+
+        jsPlumb.draggable(source, {
+          containment: 'parent'
+        });
+
+        source.dblclick(function (e) {
+          jsPlumb.detachAllConnections($(this));
+          $(this).remove();
+          e.stopPropagation();
+        });
+
+        stateName.keyup(function (e) {
+          if (e.keyCode === 13) {
+            $(this).parent().text(this.value);
+          }
+        });
+        stateName.focus();
+
+        jsPlumb.bind("connection", function (info, originalEvent) {
+          if(duplicateConnections == sources.length - 1) {
+            duplicateConnections = 0;
+            var connection = info.connection;
+
+            var labelInput = $('<input>').attr('type', 'text');
+            labelInput.css({
+              'position': 'absolute',
+              'top': originalEvent.pageY,
+              'left': originalEvent.pageX
+            });
+
+            $('#container').append(labelInput);
+            labelInput.focus();
+            labelInput.keyup(function (e) {
+                if (e.keyCode === 13) {
+                  connection.addOverlay(["Label", {label: this.value, id: "label" }, labelCss]);
+                  labelInput.remove();
+                }
+              }
+            );
+          } else {
+            duplicateConnections++;
+          }
+        });
+
+        i++;
+      });
+
+    });
+    /*]]>*/
+  </script>
 </html>

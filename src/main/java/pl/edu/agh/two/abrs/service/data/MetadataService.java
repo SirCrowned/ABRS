@@ -3,11 +3,10 @@ package pl.edu.agh.two.abrs.service.data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.model.ColumnType;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 import pl.edu.agh.two.abrs.model.Source;
+import pl.edu.agh.two.abrs.model.SourceColumn;
 import pl.edu.agh.two.abrs.model.SourceProperties;
 import pl.edu.agh.two.abrs.model.SourcePropertiesType;
-import pl.edu.agh.two.abrs.model.SourceType;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
 import pl.edu.agh.two.abrs.service.csv.CsvReadException;
 import pl.edu.agh.two.abrs.service.csv.CsvService;
@@ -19,7 +18,6 @@ import pl.edu.agh.two.abrs.service.db.MySqlConnectionParams;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 @Service
@@ -35,15 +33,15 @@ public class MetadataService {
     private CsvService csvService;
 
     //TODO: implement services to retrieve metadata of CSV, XML or DB TABLE
-    public List<LocalSchemaColumn> getMetadata(long sourceId) throws DbReaderException, CsvReadException {
+    public List<SourceColumn> getMetadata(long sourceId) throws DbReaderException, CsvReadException {
         Source source = sourceRepository.getOne(sourceId);
         return getColumnsMetadata(source);
     }
 
-    private List<LocalSchemaColumn> getColumnsMetadata(Source source) throws DbReaderException, CsvReadException {
+    private List<SourceColumn> getColumnsMetadata(Source source) throws DbReaderException, CsvReadException {
 
         Map<SourcePropertiesType, String> properties = sourcePropertiesToMap(source.getSourceProperties());
-        List<LocalSchemaColumn> columns;
+        List<SourceColumn> columns;
         switch(source.getSourceType()){
             case DATABASE:
                 columns = dbSourceService.getColumns(
@@ -51,13 +49,13 @@ public class MetadataService {
                         properties.get(SourcePropertiesType.TABLE));
                 break;
             case CSV:
-                columns = csvService.getColumns(properties.get(SourcePropertiesType.URL), null);
+                columns = csvService.getColumns(properties.get(SourcePropertiesType.URL));
                 break;
             default:
                 columns = new ArrayList<>();
-                columns.add(new LocalSchemaColumn("PRODUCT", ColumnType.STRING, null));
-                columns.add(new LocalSchemaColumn("PRICE", ColumnType.DOUBLE, null));
-                columns.add(new LocalSchemaColumn("QUANTITY", ColumnType.INTEGER, null));
+                columns.add(new SourceColumn("PRODUCT", ColumnType.STRING));
+                columns.add(new SourceColumn("PRICE", ColumnType.STRING));
+                columns.add(new SourceColumn("QUANTITY", ColumnType.STRING));
                 break;
         }
         return columns;

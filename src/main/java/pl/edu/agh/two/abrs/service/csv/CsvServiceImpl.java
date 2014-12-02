@@ -7,15 +7,13 @@ import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.model.ColumnType;
-import pl.edu.agh.two.abrs.model.LocalSchema;
-import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
+import pl.edu.agh.two.abrs.model.SourceColumn;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -80,9 +78,9 @@ public class CsvServiceImpl implements CsvService {
     }
 
     @Override
-    public List<LocalSchemaColumn> getColumns(String url, LocalSchema schema) throws CsvReadException{
-        List<LocalSchemaColumn> result = new ArrayList<>();
-        getHeaders(url).forEach(h -> result.add(new LocalSchemaColumn(h, ColumnType.STRING, schema)));
+    public List<SourceColumn> getColumns(String url) throws CsvReadException{
+        List<SourceColumn> result = new ArrayList<>();
+        getHeaders(url).forEach(h -> result.add(new SourceColumn(h, ColumnType.STRING)));
         return result;
     }
 }
