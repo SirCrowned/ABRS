@@ -15,18 +15,18 @@ public class GlobalSchemaRecord {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private LinkedList<Object> attributes = new LinkedList<>();
+    private LinkedList<Object> values = new LinkedList<>();
 
-    public GlobalSchemaRecord(List<Object> attributes){
-        if(attributes==null){
+    public GlobalSchemaRecord(List<Object> values){
+        if(values ==null){
             throw new IllegalArgumentException();
         }
-        for(Object o: attributes){
-            this.attributes.add(o);
+        for(Object o: values){
+            this.values.add(o);
         }
     }
 
-    public List<Object> getAttributes() {
-        return new ArrayList<>(attributes);
+    public List<Object> getValues() {
+        return new ArrayList<>(values);
     }
 }

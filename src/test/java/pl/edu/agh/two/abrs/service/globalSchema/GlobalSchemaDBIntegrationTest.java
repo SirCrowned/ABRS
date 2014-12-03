@@ -118,7 +118,7 @@ public class GlobalSchemaDBIntegrationTest {
         //GlobalSchemaTable second_table
         assertEquals(first_table.getRecords().size(), 1);
         GlobalSchemaRecord record = first_table.getRecords().get(0);
-        assertEquals(record.getAttributes().size(),3);
+        assertEquals(record.getValues().size(),3);
     }
 */
     @Configuration
