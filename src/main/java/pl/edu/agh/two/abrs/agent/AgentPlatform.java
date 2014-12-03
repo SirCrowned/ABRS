@@ -54,11 +54,11 @@ public class AgentPlatform {
         }
     }
 
-    private void info(String message) {
+    public static void info(String message) {
         System.out.println("[INFO] " + message);
     }
 
-    private void error(String message) {
+    public static void error(String message) {
         System.out.println("[ERROR] " + message);
     }
 }
