@@ -2,6 +2,7 @@ package pl.edu.agh.two.abrs.model.global;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -13,6 +14,9 @@ public class GlobalSchemaTable {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaColumn> columns;
+
+    @OneToMany
+    private List<GlobalSchemaRecord> records = new LinkedList<>();
 
     private String name;
 
@@ -37,5 +41,16 @@ public class GlobalSchemaTable {
 
     public String getName() {
         return name;
+    }
+
+    public List<GlobalSchemaRecord> getRecords() {
+        return new ArrayList<GlobalSchemaRecord>(records);
+    }
+
+    public void addRecord(GlobalSchemaRecord record){
+        if(record==null){
+            throw new IllegalArgumentException();
+        }
+        records.add(record);
     }
 }
