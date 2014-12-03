@@ -18,6 +18,9 @@ public class Source {
     @Column(name = "type", nullable = false)
     private SourceType sourceType;
 
+    @Column(name = "refreshInterval", nullable = false)
+    private long refreshInterval = 1;
+
     @OneToMany(mappedBy = "source", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<SourceProperties> sourceProperties;
 
@@ -25,8 +28,13 @@ public class Source {
     }
 
     public Source(String name, SourceType sourceType) {
+        this(name, sourceType, 5);
+    }
+
+    public Source(String name, SourceType sourceType, long refreshInterval) {
         this.name = name;
         this.sourceType = sourceType;
+        this.refreshInterval = refreshInterval;
     }
 
     public Long getId() {
@@ -59,6 +67,14 @@ public class Source {
 
     public void setSourceProperties(List<SourceProperties> sourceProperties) {
         this.sourceProperties = sourceProperties;
+    }
+
+    public long getRefreshInterval() {
+        return refreshInterval;
+    }
+
+    public void setRefreshInterval(long refreshInterval) {
+        this.refreshInterval = refreshInterval;
     }
 
     @Override
