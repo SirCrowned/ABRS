@@ -6,6 +6,7 @@ import pl.edu.agh.two.abrs.model.global.GlobalSchema;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaColumnRepository;
+import pl.edu.agh.two.abrs.repository.GlobalSchemaRecordRepository;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaTableRepository;
 
@@ -23,6 +24,9 @@ public class GlobalSchemaService {
     @Autowired
     private GlobalSchemaTableRepository globalSchemaTableRepository;
 
+    @Autowired
+    private GlobalSchemaRecordRepository globalSchemaRecordRepository;
+
     public GlobalSchemaRepository getGlobalSchemaRepository() {
         return globalSchemaRepository;
     }
@@ -39,6 +43,7 @@ public class GlobalSchemaService {
         globalSchemaRepository.deleteAll();
         for (GlobalSchemaTable schemaTable : globalSchema.getTables()) {
                 globalSchemaColumnRepository.save(schemaTable.getColumns());
+                globalSchemaRecordRepository.save(schemaTable.getRecords());
         }
         globalSchemaTableRepository.save(globalSchema.getTables());
 

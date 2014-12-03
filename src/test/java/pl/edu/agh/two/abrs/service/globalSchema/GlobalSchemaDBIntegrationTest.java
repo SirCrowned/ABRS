@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.global.GlobalSchema;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
+import pl.edu.agh.two.abrs.model.global.GlobalSchemaRecord;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaColumnRepository;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaTableRepository;
@@ -30,6 +31,8 @@ import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -95,7 +98,29 @@ public class GlobalSchemaDBIntegrationTest {
         assertEquals(globalSchemaColumnRepository.findAll().size(), 0);
         assertEquals(globalSchemaTableRepository.findAll().size(), 0);
     }
-
+/*
+    @Test
+    public void test_data() {
+        ArrayList<GlobalSchemaColumn> columns = new ArrayList<>();
+        columns.add(new GlobalSchemaColumn(ColumnType.BOOLEAN, "col1"));
+        ArrayList<GlobalSchemaTable> tables = new ArrayList<>();
+        GlobalSchemaTable test_table = new GlobalSchemaTable("Tabela", columns);
+        test_table.addRecord(new GlobalSchemaRecord(Arrays.asList(new Object(), new Object(), new Object())));
+        tables.add(test_table);
+        //tables.add(new GlobalSchemaTable("Tablea2", new ArrayList<>()));
+        GlobalSchema schema = new GlobalSchema(tables);
+        service.updateGlobalSchema(schema);
+        GlobalSchema newSchema = service.getGlobalSchema();
+        assertEquals(newSchema.getTables().size(), 1);
+        assertEquals(newSchema.getTables().get(0).getColumns().size(), 1);
+        List<GlobalSchemaTable> got_tables = newSchema.getTables();
+        GlobalSchemaTable first_table = got_tables.get(0);
+        //GlobalSchemaTable second_table
+        assertEquals(first_table.getRecords().size(), 1);
+        GlobalSchemaRecord record = first_table.getRecords().get(0);
+        assertEquals(record.getAttributes().size(),3);
+    }
+*/
     @Configuration
     @ComponentScan(basePackages = "pl.edu.agh.two.abrs.*")
     @EnableJpaRepositories(basePackages = "pl.edu.agh.two.abrs.repository")
