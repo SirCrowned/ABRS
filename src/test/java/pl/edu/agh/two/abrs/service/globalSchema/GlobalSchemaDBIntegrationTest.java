@@ -77,6 +77,7 @@ public class GlobalSchemaDBIntegrationTest {
         assertEquals(newSchema.getTables().get(0).getColumns().size(), 1);
     }
 
+    @Test
     public void cascade_removing() {
         service.deleteGlobalSchema();
 
