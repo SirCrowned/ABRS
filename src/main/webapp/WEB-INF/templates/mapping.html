@@ -10,43 +10,43 @@
     <div class="container">
       <h1>Create mapping</h1>
 
-      <div class="col-sm-3">
-        <table id="source" class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col" th:cols="2">Source</th>
-              <th scope="col">Type</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr th:each="source : ${sourceList}">
-              <td th:text="${source.id}" th:attr="data-id=${source.id}"></td>
-              <td th:text="${source.name}" th:attr="data-id=${source.id}"></td>
-              <td th:text="${source.sourceType}" th:attr="data-id=${source.id}"></td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-      <div class="col-sm-6">
-        <table id="column" class="table table-striped">
-          <thead>
-            <tr>
-              <th scope="col">Column</th>
-              <th scope="col">Type</th>
-              <th scope="col">Transform</th>
-            </tr>
-          </thead>
-          <tbody>
-            <div th:each="localSchema : ${localSchemaList}">
-              <tr th:each="column : ${localSchema.localSchemaColumn}">
-                <td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>
-                <td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>
-                <td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>
-              </tr>
-            </div>
-          </tbody>
-        </table>
-      </div>
+      <!--<div class="col-sm-3">-->
+        <!--<table id="source" class="table table-striped">-->
+          <!--<thead>-->
+            <!--<tr>-->
+              <!--<th scope="col" th:cols="2">Source</th>-->
+              <!--<th scope="col">Type</th>-->
+            <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+            <!--<tr th:each="source : ${sourceList}">-->
+              <!--<td th:text="${source.id}" th:attr="data-id=${source.id}"></td>-->
+              <!--<td th:text="${source.name}" th:attr="data-id=${source.id}"></td>-->
+              <!--<td th:text="${source.sourceType}" th:attr="data-id=${source.id}"></td>-->
+            <!--</tr>-->
+          <!--</tbody>-->
+        <!--</table>-->
+      <!--</div>-->
+      <!--<div class="col-sm-6">-->
+        <!--<table id="column" class="table table-striped">-->
+          <!--<thead>-->
+            <!--<tr>-->
+              <!--<th scope="col">Column</th>-->
+              <!--<th scope="col">Type</th>-->
+              <!--<th scope="col">Transform</th>-->
+            <!--</tr>-->
+          <!--</thead>-->
+          <!--<tbody>-->
+            <!--<div th:each="localSchema : ${localSchemaList}">-->
+              <!--<tr th:each="column : ${localSchema.localSchemaColumn}">-->
+                <!--<td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>-->
+                <!--<td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>-->
+                <!--<td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>-->
+              <!--</tr>-->
+            <!--</div>-->
+          <!--</tbody>-->
+        <!--</table>-->
+      <!--</div>-->
       <div class="col-sm-3">
         <table id="global" class="table table-striped">
           <thead>
@@ -68,7 +68,7 @@
           </tbody>
         </table>
         <button type="button" class="btn btn-default" id="addGlobal" data-toggle="modal" data-target="#addMapping">Add</button>
-        <button type="button" class="btn btn-default" id="save">Save</button>
+        <!--<button type="button" class="btn btn-default" id="save">Save</button>-->
       </div>
     </div>
 
@@ -89,7 +89,7 @@
                   <select class="form-control" id="local">
                     <div th:each="localSchema : ${localSchemaList}">
                       <div th:each="column : ${localSchema.localSchemaColumn}">
-                        <option th:text="${column.name}"></option>
+                        <option th:value="${column.id}" th:text="${column.name}"></option>
                       </div>
                     </div>
                   </select>
@@ -100,9 +100,9 @@
 
                 <div class="col-sm-8">
                   <select class="form-control" id="globalCol">
-                    <option selected="selected">Global One</option>
-                    <option>Global Two</option>
-                    <option>Global Three</option>
+                    <div th:each="globalColumn : ${globalSchemaColumns}">
+                      <option th:value="${globalColumn.id}" th:text="${globalColumn.name}"></option>
+                    </div>
                   </select>
                 </div>
               </div>
@@ -137,15 +137,26 @@
 
           var tr = $("<tr>");
           var td1 = $("<td>").appendTo(tr);
-          td1.html($("#local").val());
+          var localColumn = $("#local option:selected");
+          td1.html(localColumn.text());
 
           var td2 = $("<td>").appendTo(tr);
-          td2.html($("#globalCol").val());
+          var globalCol = $("#globalCol option:selected");
+          td2.html(globalCol.text());
 
           var td3 = $("<td>").appendTo(tr);
           td3.html("ANY");
 
           tr.appendTo('#global tbody');
+
+          $.ajax({
+            url: "http://localhost:8080/mapping/add",
+            type: "POST",
+            data: {
+              localId: localColumn.val(),
+              globalId: globalCol.val()
+            }
+          })
 
           $('#closeAddGlobal').click();
           e.stopPropagation();
