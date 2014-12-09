@@ -1,7 +1,6 @@
 package pl.edu.agh.two.abrs.model.mapping;
 
 import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
-import pl.edu.agh.two.abrs.model.Source;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
 
 import javax.persistence.CascadeType;
@@ -29,6 +28,9 @@ public class Mapping {
         this.localSchemaColumn = localSchemaColumn;
     }
 
+    public Mapping() {
+    }
+
     public GlobalSchemaColumn getGlobalSchemaColumn() {
         return globalSchemaColumn;
     }
@@ -36,4 +38,7 @@ public class Mapping {
     public LocalSchemaColumn getLocalSchemaColumn() {
         return localSchemaColumn;
     }
+
+    public Long getId() { return id; }
+
 }

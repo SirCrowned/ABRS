@@ -58,9 +58,9 @@
           </thead>
           <tbody>
             <tr th:each="mapping : ${mappings}" th:attr="data-id=${mapping.id}">
-              <td th:text="${mapping.from}"></td>
-              <td th:text="${mapping.to}"></td>
-              <td th:text="${mapping.type}"></td>
+              <td th:text="${mapping.localSchemaColumn.name}"></td>
+              <td th:text="${mapping.globalSchemaColumn.name}"></td>
+              <td th:text="${mapping.globalSchemaColumn.columnType}"></td>
               <td>
                 <a href="#" class="remove btn btn-danger" th:attr="data-id=${mapping.id}">Remove</a>
               </td>
