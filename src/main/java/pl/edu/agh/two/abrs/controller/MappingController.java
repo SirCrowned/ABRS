@@ -39,6 +39,12 @@ public class MappingController {
         return "OK";
     }
 
+    @RequestMapping(value = "/mapping/remove",method = RequestMethod.POST)
+    public @ResponseBody String removeMapping(@RequestParam("mappingId") long mappingId){
+        repository.delete(mappingId);
+        return "OK";
+    }
+
     @RequestMapping(value = "/mapping", method = RequestMethod.GET)
     public String getMapping(ModelMap model) {
         model.addAttribute("localSchemaList", localSchemaRepository.findAll());

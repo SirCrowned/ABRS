@@ -62,7 +62,7 @@
               <td th:text="${mapping.globalSchemaColumn.name}"></td>
               <td th:text="${mapping.globalSchemaColumn.columnType}"></td>
               <td>
-                <a href="#" class="remove btn btn-danger" th:attr="data-id=${mapping.id}">Remove</a>
+                <a href="#" class="remove btn btn-danger" id="removeMapping" th:attr="data-id=${mapping.id}">Remove</a>
               </td>
             </tr>
           </tbody>
@@ -155,6 +155,24 @@
             data: {
               localId: localColumn.val(),
               globalId: globalCol.val()
+            }
+          }).done(function (data) {
+            if (data == "OK") {
+              location.reload();
+            }
+          });
+
+          $('#closeAddGlobal').click();
+          e.stopPropagation();
+        });
+
+        $('#removeMapping').click(function (e) {
+          
+          $.ajax({
+            url: "http://localhost:8080/mapping/remove",
+            type: "POST",
+            data: {
+              mappingId: $(this).data("id")
             }
           }).done(function (data) {
             if (data == "OK") {
