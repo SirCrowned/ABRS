@@ -135,19 +135,19 @@
 
         $('#addGlobalSave').click(function (e) {
 
-          var tr = $("<tr>");
-          var td1 = $("<td>").appendTo(tr);
+//          var tr = $("<tr>");
+//          var td1 = $("<td>").appendTo(tr);
           var localColumn = $("#local option:selected");
-          td1.html(localColumn.text());
-
-          var td2 = $("<td>").appendTo(tr);
+//          td1.html(localColumn.text());
+//
+//          var td2 = $("<td>").appendTo(tr);
           var globalCol = $("#globalCol option:selected");
-          td2.html(globalCol.text());
-
-          var td3 = $("<td>").appendTo(tr);
-          td3.html("ANY");
-
-          tr.appendTo('#global tbody');
+//          td2.html(globalCol.text());
+//
+//          var td3 = $("<td>").appendTo(tr);
+//          td3.html("ANY");
+//
+//          tr.appendTo('#global tbody');
 
           $.ajax({
             url: "http://localhost:8080/mapping/add",
@@ -156,7 +156,11 @@
               localId: localColumn.val(),
               globalId: globalCol.val()
             }
-          })
+          }).done(function (data) {
+            if (data == "OK") {
+              location.reload();
+            }
+          });
 
           $('#closeAddGlobal').click();
           e.stopPropagation();
