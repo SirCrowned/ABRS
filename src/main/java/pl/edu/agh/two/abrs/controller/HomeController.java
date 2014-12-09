@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import pl.edu.agh.two.abrs.repository.GraphConnRepository;
+import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
 
@@ -18,8 +20,16 @@ public class HomeController {
     @Autowired
     private LocalSchemaRepository localSchemaRepository;
 
+    @Autowired
+    private GraphConnRepository graphConnRepository;
+
+    @Autowired
+    private GraphItemRepository graphItemRepository;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String getHome() {
+    public String getHome(ModelMap model) {
+        model.addAttribute("items", graphItemRepository.findAll());
+        model.addAttribute("conn", graphConnRepository.findAll());
         return "index";
     }
 
@@ -39,6 +49,7 @@ public class HomeController {
     public String getLocalSchema(ModelMap model) {
         model.addAttribute("sourceList", sourceRepository.findAll());
         model.addAttribute("localSchema", localSchemaRepository.findAll());
+        model.addAttribute("items", graphItemRepository.findAll());
         return "localSchema";
     }
 
