@@ -7,6 +7,7 @@ import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.LocalSchema;
 import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 import pl.edu.agh.two.abrs.model.Source;
+import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaColumnRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
@@ -32,11 +33,15 @@ public class LocalSchemaService {
     private LocalSchemaColumnRepository localSchemaColumnRepository;
 
     @Autowired
+    private GraphItemRepository graphItemRepository;
+
+    @Autowired
     private SourceRepository sourceRepository;
 
-    public boolean addLocalSchema(String name, long sourceId, List<LocalSchemaColumn> columns) {
+    public boolean addLocalSchema(String name, long sourceId, long itemId, List<LocalSchemaColumn> columns) {
         Source source = sourceRepository.getOne(sourceId);
         LocalSchema localSchema = new LocalSchema(name, source);
+        localSchema.setGraphItem(graphItemRepository.findOne(itemId));
         localSchema = localSchemaRepository.save(localSchema);
 
         List<LocalSchemaColumn> savedColumns = new ArrayList<>();

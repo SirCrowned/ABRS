@@ -1,5 +1,7 @@
 package pl.edu.agh.two.abrs.model;
 
+import pl.edu.agh.two.abrs.model.graph.GraphItem;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +28,9 @@ public class LocalSchema {
 
     @OneToOne(cascade = CascadeType.DETACH)
     private Source source;
+
+    @OneToOne(cascade = CascadeType.DETACH)
+    private GraphItem graphItem;
 
     @OneToMany(mappedBy = "localSchema", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private List<LocalSchemaColumn> localSchemaColumn;
@@ -79,6 +84,14 @@ public class LocalSchema {
         }
 
         return null;
+    }
+
+    public GraphItem getGraphItem() {
+        return graphItem;
+    }
+
+    public void setGraphItem(GraphItem graphItem) {
+        this.graphItem = graphItem;
     }
 
     @Override
