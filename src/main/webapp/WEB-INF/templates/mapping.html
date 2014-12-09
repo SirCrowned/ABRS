@@ -166,7 +166,7 @@
           e.stopPropagation();
         });
 
-        $('#removeMapping').click(function (e) {
+        $('.remove').click(function (e) {
           
           $.ajax({
             url: "http://localhost:8080/mapping/remove",
@@ -180,7 +180,7 @@
             }
           });
 
-          $('#closeAddGlobal').click();
+//          $('#closeAddGlobal').click();
           e.stopPropagation();
         });
 
