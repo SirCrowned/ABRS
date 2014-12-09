@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import pl.edu.agh.two.abrs.repository.LocalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
+import pl.edu.agh.two.abrs.service.cron.CronService;
 
 @Controller
 @RequestMapping("/")
@@ -18,6 +19,9 @@ public class HomeController {
     @Autowired
     private LocalSchemaRepository localSchemaRepository;
 
+    @Autowired
+    private CronService cronService;
+
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String getHome() {
         return "index";
@@ -27,7 +31,6 @@ public class HomeController {
     public String getSource() {
         return "source";
     }
-
 
     @RequestMapping(value = "/sourceList", method = RequestMethod.GET)
     public String getSourceList(ModelMap model) {
@@ -54,6 +57,4 @@ public class HomeController {
         model.addAttribute("localSchemaList", localSchemaRepository.findAll());
         return "mapping";
     }
-
-
 }
