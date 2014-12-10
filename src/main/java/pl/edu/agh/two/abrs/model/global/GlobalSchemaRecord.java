@@ -17,7 +17,7 @@ public class GlobalSchemaRecord {
     @CollectionTable(joinColumns=@JoinColumn(name="record_id"))
     private List<String> attributes = new LinkedList<>();
 
-    public GlobalSchemaRecord(List<Object> attributes){
+    public GlobalSchemaRecord(List<String> attributes){
         if(attributes==null){
             throw new IllegalArgumentException();
         }
@@ -26,7 +26,7 @@ public class GlobalSchemaRecord {
         }
     }
 
-    public List<Object> getAttributes() {
-        return new ArrayList<>(attributes);
+    public List<String> getAttributes() {
+        return new LinkedList<>(attributes);
     }
 }

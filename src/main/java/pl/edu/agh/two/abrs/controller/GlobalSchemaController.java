@@ -14,7 +14,7 @@ import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.global.GlobalSchema;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
-import pl.edu.agh.two.abrs.repository.GlobalSchemaRepository;
+import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.service.globalSchema.GlobalSchemaService;
 
 import javax.annotation.PostConstruct;
@@ -29,6 +29,9 @@ public class GlobalSchemaController {
     @Autowired
     private GlobalSchemaService globalSchemaService;
 
+    @Autowired
+    private GraphItemRepository graphItemRepository;
+
     @PostConstruct
     public void initGlobalSchema() {
         if (globalSchemaService.getGlobalSchema() == null) {
@@ -42,6 +45,7 @@ public class GlobalSchemaController {
         GlobalSchema globalSchema = globalSchemaService.getGlobalSchema();
         model.addAttribute("tablesList", globalSchema.getTables());
         model.addAttribute("columnTypes", ColumnType.values());
+        model.addAttribute("items", graphItemRepository.findAll());
         return "globalSchema";
     }
 
