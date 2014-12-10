@@ -31,7 +31,7 @@ public class LocalSchemaController {
     @RequestMapping(value = "/add/", method = RequestMethod.POST)
     public
     @ResponseBody
-    String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId) {
+    String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId, @RequestParam("itemId") long itemId) {
 
         List<LocalSchemaColumn> columns = new ArrayList<>();
         try {
@@ -48,8 +48,7 @@ public class LocalSchemaController {
             return "ERROR";
         }
 
-
-        if (localSchemaService.addLocalSchema(name, sourceId, columns)) {
+        if (localSchemaService.addLocalSchema(name, sourceId, itemId, columns)) {
             return "OK";
         } else {
             return "ERROR";

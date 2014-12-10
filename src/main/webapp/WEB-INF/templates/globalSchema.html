@@ -23,7 +23,9 @@
       <div class="panel-group col-sm-8">
         <div class="table-details-panel panel panel-default" th:each="table : ${tablesList}" th:attr="data-table-id=${table.id},data-table-name=${table.name}">
           <div class="panel-heading clearfix">
-            <h4 class="panel-title pull-left" th:text="'Table: ' + ${table.name}"></h4>
+            <h4 class="panel-title pull-left" th:text="'Table: ' + ${table.name}"></h4><br/>
+
+            <h3 class="panel-title pull-left" th:text="'State: ' + ${table.graphItem.label}"></h3>
             <button type="button" class="btn btn-danger pull-right" th:attr="data-table-name=${table.name}">Remove</button>
           </div>
           <table class="table table-striped">
@@ -56,6 +58,18 @@
           </div>
           <div class="modal-body">
             <input type="text" class="form-control" id="table-name" placeholder="Table name"/>
+            <br/>
+            <label for="itemsId" class="col-sm-2 control-label">State:</label>
+
+            <div class="col-sm-6">
+              <select id="itemsId" class="form-control">
+                <option th:each="item : ${items}"
+                        th:value="${item.id}"
+                        th:text="${item.label}">State name
+                </option>
+              </select>
+            </div>
+
             <table class="table table-striped">
               <thead>
                 <tr>
@@ -95,6 +109,9 @@
     <script th:inline="javascript">
       //<![CDATA[
       jQuery(function ($) {
+
+        var initItems = /*[[${items}]]*/ [];
+
         $(".tables-list-element").click(function () {
           var sameTableClicked = $(this).hasClass("list-group-item-info");
 
@@ -159,10 +176,18 @@
             })
           });
 
+          var grafItem = {};
+          for (var j = 0; j < initItems.length; j++) {
+            if (initItems[j].id == $('#itemsId').val()) {
+              grafItem = initItems[j];
+            }
+          }
+
           var url = /*[[@{/globalSchema/table/add}]]*/ "/globalSchema/table/add";
           var data = JSON.stringify({
             name: tableName,
-            columns: columns
+            columns: columns,
+            graphItem: grafItem
           });
           sendPost(url, data);
         });
