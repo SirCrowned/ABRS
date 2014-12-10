@@ -1,0 +1,14 @@
+
+.new-report-form-panel {
+    border-bottom: 1px solid #aaa;
+    padding-bottom: 10px;
+    margin-bottom: 10px;
+}
+
+.report-element-panels {
+    margin-top: 10px;
+}
+
+.template {
+    display: none;
+}
