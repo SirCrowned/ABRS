@@ -51,4 +51,11 @@ public class CreateReportController {
 		reportSchemaService.addReportSchema(reportSchema);
 		return "OK";
 	}
+
+
+	@RequestMapping(value = "/list", method = RequestMethod.GET)
+	public
+	String listReports() {
+		return "reportList";
+	}
 }
