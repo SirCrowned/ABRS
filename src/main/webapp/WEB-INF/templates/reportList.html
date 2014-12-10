@@ -19,7 +19,13 @@
           </tr>
         </thead>
         <tbody>
-         
+          <tr th:each="reportSchema : ${reportSchemas}" th:attr="data-id=${reportSchema.id}" class="schema-definition">
+            <td th:text="${reportSchema.id}"></td>
+            <td th:text="${reportSchema.name}"></td>
+            <td>
+              <a href="#" class="view btn btn-default" th:attr="data-id=${reportSchema.id}">View</a>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>

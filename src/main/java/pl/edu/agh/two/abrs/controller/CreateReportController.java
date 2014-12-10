@@ -55,7 +55,8 @@ public class CreateReportController {
 
 	@RequestMapping(value = "/list", method = RequestMethod.GET)
 	public
-	String listReports() {
+	String listReports(ModelMap modelMap) {
+		modelMap.addAttribute("reportSchemas", reportSchemaService.getAll());
 		return "reportList";
 	}
 }
