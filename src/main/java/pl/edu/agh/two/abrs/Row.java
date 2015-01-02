@@ -3,9 +3,10 @@ package pl.edu.agh.two.abrs;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
-public class Row {
+public class Row implements Iterable{
 
     private final List<Object> fields;
 
@@ -19,5 +20,10 @@ public class Row {
 
     public int length() {
         return fields.size();
+    }
+
+    @Override
+    public Iterator iterator() {
+        return fields.iterator();
     }
 }

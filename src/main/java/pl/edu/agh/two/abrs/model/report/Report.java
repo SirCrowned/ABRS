@@ -1,5 +1,6 @@
 package pl.edu.agh.two.abrs.model.report;
 
+import java.awt.image.BufferedImage;
 import java.util.List;
 
 public class Report {
@@ -20,4 +21,5 @@ public class Report {
     public List<ReportElement> getElements() {
         return elements;
     }
+
 }
