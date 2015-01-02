@@ -23,18 +23,88 @@
             <td th:text="${reportSchema.id}"></td>
             <td th:text="${reportSchema.name}"></td>
             <td>
-              <a href="#" class="view btn btn-default" th:attr="data-id=${reportSchema.id}">View</a>
+              <button type="button" class="view btn btn-default" th:attr="data-id=${reportSchema.id}">View</button>
+            </td>
+            <td>
+              <a href="#" class="edit btn btn-default" th:attr="data-id=${reportSchema.id}">Edit</a>
+            </td>
+            <td>
+              <a href="#" class="remove btn btn-danger" th:attr="data-id=${reportSchema.id}">Remove</a>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
 
+    <div class="modal fade" id="report-view" tabindex="-1" role="dialog">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+            </button>
+            <h4 class="modal-title">Report details</h4>
+          </div>
+          <div class="modal-body">
+            <h5>Tables</h5>
+            <div id="report-tables"></div>
+            <div id="report-charts">
+              <table class="table table-striped">
+                <thead>
+                <tr>
+                  <th scope="col">Chart Name</th>
+                  <th scope="col">Chart Type</th>
+                  <th scope="col">Table Name</th>
+                  <th scope="col">X Axis Column</th>
+                  <th scope="col">Y Axis Column</th>
+                </tr>
+                </thead>
+                <tbody>
+
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="modal-footer">
+          </div>
+        </div>
+      </div>
+    </div>
+
 
     <script th:inline="javascript">
       //<![CDATA[
       jQuery(function ($) {
+        $('.view').on('click', function () {
+          $.ajax({
+            url: "http://localhost:8080/report/getSchema",
+            type: "GET",
+            data: {
+              schemaId: $(this).data('id')
+            }
+          }).done(function (data) {
+            $('#report-tables').empty();
+            var tableNameList = $('<ul/>').appendTo('#report-tables');
+            $.each(data['tables'],function(i,tableName){
+              $('<li/>').text(tableName).appendTo(tableNameList);
+            });
 
+            var chartTableBody = $('#report-charts tbody').empty();
+            $.each(data['charts'],function(i,chartData){
+              var tr = $('<tr/>');
+              console.log(chartData);
+
+              $('<td/>').text(chartData['name']).appendTo(tr);
+              $('<td/>').text(chartData['type']).appendTo(tr);
+              $('<td/>').text(chartData['table']).appendTo(tr);
+              $('<td/>').text(chartData['xAxisColumn']).appendTo(tr);
+              $('<td/>').text(chartData['yAxisColumn']).appendTo(tr);
+
+              chartTableBody.append(tr);
+            });
+            console.log(data);
+            $('#report-view').modal('show');
+          })
+        })
 
       });
       //]]>

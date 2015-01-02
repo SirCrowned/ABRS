@@ -4,15 +4,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
 import pl.edu.agh.two.abrs.model.report.schema.ChartType;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaTableRepository;
+import pl.edu.agh.two.abrs.repository.ReportSchemaRepository;
 import pl.edu.agh.two.abrs.service.report.ReportSchemaService;
 
 import java.util.ArrayList;
@@ -28,6 +25,9 @@ public class CreateReportController {
 
 	@Autowired
 	private ReportSchemaService reportSchemaService;
+
+	@Autowired
+	private ReportSchemaRepository reportSchemaRepository;
 
 	@ExceptionHandler(Exception.class)
 	public
@@ -58,5 +58,10 @@ public class CreateReportController {
 	String listReports(ModelMap modelMap) {
 		modelMap.addAttribute("reportSchemas", reportSchemaService.getAll());
 		return "reportList";
+	}
+
+	@RequestMapping(value = "/getSchema", method = RequestMethod.GET)
+	public @ResponseBody ReportSchema listReports(@RequestParam("schemaId") long schemaId) {
+		return reportSchemaRepository.findOne(schemaId);
 	}
 }

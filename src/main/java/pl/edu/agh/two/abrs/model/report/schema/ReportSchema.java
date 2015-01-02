@@ -21,7 +21,7 @@ public class ReportSchema {
 
 	private String name;
 
-	@ElementCollection
+	@ElementCollection(fetch = FetchType.EAGER)
 	@CollectionTable(name = "reportTable", joinColumns = @JoinColumn(name = "reportSchemaId"))
 	@Column(name = "reportTable")
 	private List<String> tables;
