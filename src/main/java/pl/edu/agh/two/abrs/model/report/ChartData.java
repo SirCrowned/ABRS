@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-public class ReportData {
+public class ChartData {
     
+    private String name;
     private Optional<String> xLabel = Optional.empty();
     private Optional<String> yLabel = Optional.empty();
 
     private List<Pair<String, Object>> pairs = new ArrayList<>();
+
+    public ChartData(String name) {
+        this.name = name;
+    }
 
     public void setxLabel(String xLabel) {
         this.xLabel = Optional.of(xLabel);
@@ -26,5 +31,9 @@ public class ReportData {
 
     public List<Pair<String, Object>> getPairs() {
         return pairs;
+    }
+
+    public String getName() {
+        return name;
     }
 }

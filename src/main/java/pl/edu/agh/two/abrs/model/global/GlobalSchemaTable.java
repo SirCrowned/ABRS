@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 @Entity
@@ -22,6 +23,9 @@ public class GlobalSchemaTable {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaColumn> columns;
+
+    @OneToMany
+    private List<GlobalSchemaRecord> records = new LinkedList<>();
 
     @OneToOne(cascade = CascadeType.DETACH)
     private GraphItem graphItem;
@@ -49,6 +53,17 @@ public class GlobalSchemaTable {
 
     public String getName() {
         return name;
+    }
+
+    public List<GlobalSchemaRecord> getRecords() {
+        return new ArrayList<GlobalSchemaRecord>(records);
+    }
+
+    public void addRecord(GlobalSchemaRecord record) {
+        if (record == null) {
+            throw new IllegalArgumentException();
+        }
+        records.add(record);
     }
 
     public GraphItem getGraphItem() {
