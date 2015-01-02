@@ -24,7 +24,7 @@ public class GlobalSchemaTable {
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaColumn> columns;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     private List<GlobalSchemaRecord> records = new LinkedList<>();
 
     @OneToOne(cascade = CascadeType.DETACH)
