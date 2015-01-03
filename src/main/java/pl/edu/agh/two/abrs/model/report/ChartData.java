@@ -11,7 +11,7 @@ public class ChartData {
     private Optional<String> xLabel = Optional.empty();
     private Optional<String> yLabel = Optional.empty();
 
-    private List<Pair<String, Object>> pairs = new ArrayList<>();
+    private List<Pair<Object, Object>> pairs = new ArrayList<>();
 
     public ChartData(String name) {
         this.name = name;
@@ -25,15 +25,20 @@ public class ChartData {
         this.yLabel = Optional.of(yLabel);
     }
 
-    public void addPair(Pair<String, Object> pair) {
+    public void addPair(Pair<Object, Object> pair) {
         pairs.add(pair);
     }
 
-    public List<Pair<String, Object>> getPairs() {
+    public List<Pair<Object, Object>> getPairs() {
         return pairs;
     }
 
     public String getName() {
         return name;
     }
+
+    public Optional<String> getxLabel() { return xLabel; }
+
+    public Optional<String> getyLabel() { return yLabel; }
+
 }
