@@ -36,6 +36,10 @@ public class ChartSchema {
 		this.yAxisColumn = yAxisColumn;
 	}
 
+	public Long getId() {
+		return id;
+	}
+
 	public String getName() {
 		return name;
 	}

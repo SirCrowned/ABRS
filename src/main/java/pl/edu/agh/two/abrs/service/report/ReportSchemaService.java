@@ -2,6 +2,7 @@ package pl.edu.agh.two.abrs.service.report;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import pl.edu.agh.two.abrs.model.report.schema.ChartSchema;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
 import pl.edu.agh.two.abrs.repository.ChartSchemaRepository;
@@ -19,21 +20,38 @@ public class ReportSchemaService {
 	@Autowired
 	private ChartSchemaRepository chartSchemaRepository;
 
-	public List<ReportSchema> getAll() {
-		return reportSchemaRepository.findAll();
-	}
-
-	public void addReportSchema(String name, List<String> tables, List<ChartSchema> charts) {
-		addReportSchema(new ReportSchema(name, tables, charts));
-	}
-
-	public void addReportSchema(ReportSchema reportSchema) {
+	public ReportSchema add(ReportSchema reportSchema) {
 		List<ChartSchema> savedCharts = new ArrayList<>();
 		for (ChartSchema chartSchema : reportSchema.getCharts()) {
 			savedCharts.add(chartSchemaRepository.save(chartSchema));
 		}
 		reportSchema.setCharts(savedCharts);
 
-		reportSchemaRepository.save(reportSchema);
+		return reportSchemaRepository.save(reportSchema);
+	}
+
+	public ReportSchema get(Long id) {
+		return reportSchemaRepository.findOne(id);
+	}
+
+	public List<ReportSchema> getAll() {
+		return reportSchemaRepository.findAll();
+	}
+
+	public ReportSchema update(ReportSchema newReport) {
+		ReportSchema oldReport = get(newReport.getId());
+		oldReport.setName(newReport.getName());
+		oldReport.getTables().clear();
+		oldReport.getCharts().clear();
+
+		oldReport.setTables(newReport.getTables());
+		for (ChartSchema newChart : newReport.getCharts()) {
+			oldReport.addChart(chartSchemaRepository.save(newChart));
+		}
+		return oldReport;
+	}
+
+	public void remove(Long id) {
+		reportSchemaRepository.delete(id);
 	}
 }
