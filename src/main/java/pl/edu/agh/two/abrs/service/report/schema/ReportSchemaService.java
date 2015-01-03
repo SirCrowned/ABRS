@@ -1,8 +1,7 @@
-package pl.edu.agh.two.abrs.service.report;
+package pl.edu.agh.two.abrs.service.report.schema;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import pl.edu.agh.two.abrs.model.report.schema.ChartSchema;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
 import pl.edu.agh.two.abrs.repository.ChartSchemaRepository;
@@ -14,11 +13,11 @@ import java.util.List;
 @Service
 public class ReportSchemaService {
 
-	@Autowired
-	private ReportSchemaRepository reportSchemaRepository;
+    @Autowired
+    private ReportSchemaRepository reportSchemaRepository;
 
-	@Autowired
-	private ChartSchemaRepository chartSchemaRepository;
+    @Autowired
+    private ChartSchemaRepository chartSchemaRepository;
 
 	public ReportSchema add(ReportSchema reportSchema) {
 		List<ChartSchema> savedCharts = new ArrayList<>();

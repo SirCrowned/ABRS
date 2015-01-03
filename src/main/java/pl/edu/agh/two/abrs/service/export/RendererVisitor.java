@@ -14,7 +14,6 @@ import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 import pl.edu.agh.two.abrs.Row;
 import pl.edu.agh.two.abrs.model.report.Chart;
-import pl.edu.agh.two.abrs.model.report.ChartData;
 import pl.edu.agh.two.abrs.model.report.Table;
 
 import java.awt.image.BufferedImage;
@@ -71,30 +70,28 @@ public class RendererVisitor {
 
     private Element renderPieChart(Chart chart) throws IOException, BadElementException {
 
-        ChartData data = chart.getChartData();
         DefaultPieDataset dataSet = new DefaultPieDataset();
 
-        for (Pair p : data.getPairs()) {
+        for (Pair p : chart.getPairs()) {
             dataSet.setValue((String) p.getKey(), (Number) p.getValue());
         }
-        JFreeChart pieChart = ChartFactory.createPieChart(data.getName(), dataSet, true, true, false);
+        JFreeChart pieChart = ChartFactory.createPieChart(chart.getName(), dataSet, true, true, false);
         BufferedImage img = pieChart.createBufferedImage(500, 600);
 
         return Image.getInstance(img, null);
     }
 
     private Element renderBarChart(Chart chart) throws IOException, BadElementException {
-        ChartData data = chart.getChartData();
         DefaultCategoryDataset dataSet = new DefaultCategoryDataset();
 
-        for (Pair p : data.getPairs()) {
+        for (Pair p : chart.getPairs()) {
             dataSet.addValue((Number) p.getValue(), (String) p.getKey(), "");
         }
 
         final JFreeChart barChart = ChartFactory.createBarChart(
-                data.getName(),
-                data.getxLabel().orElse(""),
-                data.getyLabel().orElse(""),
+                chart.getName(),
+                chart.getxLabel().orElse(""),
+                chart.getyLabel().orElse(""),
                 dataSet,
                 PlotOrientation.VERTICAL,
                 true,
@@ -107,19 +104,18 @@ public class RendererVisitor {
     }
 
     private Element renderLineChart(Chart chart) throws IOException, BadElementException {
-        ChartData data = chart.getChartData();
-        XYSeries series = new XYSeries(data.getName());
+        XYSeries series = new XYSeries(chart.getName());
 
-        for (Pair p : data.getPairs()) {
+        for (Pair p : chart.getPairs()) {
             series.add(Double.valueOf(p.getValue().toString()), Double.valueOf(p.getKey().toString()));
         }
 
         XYSeriesCollection collection = new XYSeriesCollection();
         collection.addSeries(series);
         final JFreeChart lineChart = ChartFactory.createXYLineChart(
-                data.getName(),
-                data.getxLabel().orElse(""),
-                data.getyLabel().orElse(""),
+                chart.getName(),
+                chart.getxLabel().orElse(""),
+                chart.getyLabel().orElse(""),
                 collection,
                 PlotOrientation.VERTICAL,
                 true,
