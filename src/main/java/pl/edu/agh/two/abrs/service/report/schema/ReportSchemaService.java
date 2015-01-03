@@ -19,21 +19,38 @@ public class ReportSchemaService {
     @Autowired
     private ChartSchemaRepository chartSchemaRepository;
 
-    public List<ReportSchema> getAll() {
-        return reportSchemaRepository.findAll();
-    }
+	public ReportSchema add(ReportSchema reportSchema) {
+		List<ChartSchema> savedCharts = new ArrayList<>();
+		for (ChartSchema chartSchema : reportSchema.getCharts()) {
+			savedCharts.add(chartSchemaRepository.save(chartSchema));
+		}
+		reportSchema.setCharts(savedCharts);
 
-    public void addReportSchema(String name, List<String> tables, List<ChartSchema> charts) {
-        addReportSchema(new ReportSchema(name, tables, charts));
-    }
+		return reportSchemaRepository.save(reportSchema);
+	}
 
-    public void addReportSchema(ReportSchema reportSchema) {
-        List<ChartSchema> savedCharts = new ArrayList<>();
-        for (ChartSchema chartSchema : reportSchema.getCharts()) {
-            savedCharts.add(chartSchemaRepository.save(chartSchema));
-        }
-        reportSchema.setCharts(savedCharts);
+	public ReportSchema get(Long id) {
+		return reportSchemaRepository.findOne(id);
+	}
 
-        reportSchemaRepository.save(reportSchema);
-    }
+	public List<ReportSchema> getAll() {
+		return reportSchemaRepository.findAll();
+	}
+
+	public ReportSchema update(ReportSchema newReport) {
+		ReportSchema oldReport = get(newReport.getId());
+		oldReport.setName(newReport.getName());
+		oldReport.getTables().clear();
+		oldReport.getCharts().clear();
+
+		oldReport.setTables(newReport.getTables());
+		for (ChartSchema newChart : newReport.getCharts()) {
+			oldReport.addChart(chartSchemaRepository.save(newChart));
+		}
+		return oldReport;
+	}
+
+	public void remove(Long id) {
+		reportSchemaRepository.delete(id);
+	}
 }

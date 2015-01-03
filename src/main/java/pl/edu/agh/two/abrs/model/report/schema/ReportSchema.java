@@ -10,7 +10,12 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import pl.edu.agh.two.abrs.model.report.Chart;
 
 @Entity
 public class ReportSchema {
@@ -21,10 +26,8 @@ public class ReportSchema {
 
 	private String name;
 
-	@ElementCollection(fetch = FetchType.EAGER)
-	@CollectionTable(name = "reportTable", joinColumns = @JoinColumn(name = "reportSchemaId"))
 	@Column(name = "reportTable")
-	private List<String> tables;
+	private ArrayList<String> tables;
 
 	@OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
 	private List<ChartSchema> charts;
@@ -32,7 +35,7 @@ public class ReportSchema {
 	public ReportSchema() {
 	}
 
-	public ReportSchema(String name, List<String> tables, List<ChartSchema> charts) {
+	public ReportSchema(String name, ArrayList<String> tables, List<ChartSchema> charts) {
 		this.name = name;
 		this.tables = tables;
 		this.charts = charts;
@@ -54,11 +57,11 @@ public class ReportSchema {
 		this.name = name;
 	}
 
-	public List<String> getTables() {
+	public ArrayList<String> getTables() {
 		return tables;
 	}
 
-	public void setTables(List<String> tables) {
+	public void setTables(ArrayList<String> tables) {
 		this.tables = tables;
 	}
 
@@ -68,5 +71,9 @@ public class ReportSchema {
 
 	public void setCharts(List<ChartSchema> charts) {
 		this.charts = charts;
+	}
+
+	public void addChart(ChartSchema chart){
+		this.charts.add(chart);
 	}
 }

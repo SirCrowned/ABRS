@@ -26,10 +26,10 @@
               <button type="button" class="view btn btn-default" th:attr="data-id=${reportSchema.id}">View</button>
             </td>
             <td>
-              <a href="#" class="edit btn btn-default" th:attr="data-id=${reportSchema.id}">Edit</a>
+              <a th:href="|@{/report/edit}/${reportSchema.id}|" class="edit btn btn-default">Edit</a>
             </td>
             <td>
-              <a href="#" class="remove btn btn-danger" th:attr="data-id=${reportSchema.id}">Remove</a>
+              <button type="button" class="remove btn btn-danger" th:attr="data-id=${reportSchema.id}">Remove</button>
             </td>
           </tr>
         </tbody>
@@ -46,6 +46,7 @@
           </div>
           <div class="modal-body">
             <h5>Tables</h5>
+
             <div id="report-tables"></div>
             <div id="report-charts">
               <table class="table table-striped">
@@ -104,8 +105,29 @@
             console.log(data);
             $('#report-view').modal('show');
           })
-        })
+        });
 
+        var sendPost = function (url, redirectUrl) {
+          $.ajax({
+            url: url,
+            type: "POST"
+          }).done(function (data) {
+            if (data == "OK") {
+              window.location.replace(redirectUrl);
+            }
+            else {
+              alert(data);
+            }
+          })
+        };
+
+        var removeUrl = /*[[@{/report/remove}]]*/ "/report/remove";
+        var redirectUrl = /*[[@{/report/list}]]*/ "/report/list";
+
+        $('.remove').click(function (event) {
+          var id = $(event.target).data('id');
+          sendPost(removeUrl + "/" + id, redirectUrl);
+        });
       });
       //]]>
     </script>
