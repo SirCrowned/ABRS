@@ -7,6 +7,7 @@ import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.LocalSchema;
 import pl.edu.agh.two.abrs.model.LocalSchemaColumn;
 import pl.edu.agh.two.abrs.model.Source;
+import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaColumnRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
@@ -32,16 +33,20 @@ public class LocalSchemaService {
     private LocalSchemaColumnRepository localSchemaColumnRepository;
 
     @Autowired
+    private GraphItemRepository graphItemRepository;
+
+    @Autowired
     private SourceRepository sourceRepository;
 
-    public boolean addLocalSchema(String name, long sourceId, List<LocalSchemaColumn> columns) {
+    public boolean addLocalSchema(String name, long sourceId, long itemId, List<LocalSchemaColumn> columns) {
         Source source = sourceRepository.getOne(sourceId);
         LocalSchema localSchema = new LocalSchema(name, source);
+        localSchema.setGraphItem(graphItemRepository.findOne(itemId));
         localSchema = localSchemaRepository.save(localSchema);
 
         List<LocalSchemaColumn> savedColumns = new ArrayList<>();
 
-        for(LocalSchemaColumn column : columns){
+        for (LocalSchemaColumn column : columns) {
             column.setLocalSchema(localSchema);
             savedColumns.add(localSchemaColumnRepository.save(column));
         }
@@ -61,15 +66,15 @@ public class LocalSchemaService {
         List<String> existingColumns = columns.stream().map(column -> column.name).collect(Collectors.toList());
         List<LocalSchemaColumn> removeColumns = localSchema.getLocalSchemaColumn().stream().filter(column -> !existingColumns.contains(column.getName())).collect(Collectors.toList());
 
-        for(LocalSchemaColumn column : removeColumns) {
+        for (LocalSchemaColumn column : removeColumns) {
             localSchema.getLocalSchemaColumn().remove(column);
             localSchemaColumnRepository.delete(column);
         }
 
-        for(LocalSchemaController.EditRequest.Column column : columns){
+        for (LocalSchemaController.EditRequest.Column column : columns) {
             LocalSchemaColumn local = localSchema.removeColumn(column.name);
 
-            if (local == null ){
+            if (local == null) {
                 local = new LocalSchemaColumn();
             }
 

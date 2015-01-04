@@ -6,6 +6,7 @@ import org.supercsv.io.CsvListReader;
 import org.supercsv.io.CsvMapReader;
 import org.supercsv.prefs.CsvPreference;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.RowItem;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.SourceColumn;
 
@@ -23,23 +24,21 @@ public class CsvServiceImpl implements CsvService {
     @Override
     public List<String> getHeaders(String url) throws CsvReadException {
 
-        try{
+        try {
             URL source = new URL(url);
             BufferedReader in = new BufferedReader(new InputStreamReader(source.openStream()));
             CsvListReader csvReader = new CsvListReader(in, CsvPreference.STANDARD_PREFERENCE);
             String[] header = csvReader.getHeader(true);
             return Arrays.asList(header);
-
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new CsvReadException("Unable to get headers from CSV.", e);
         }
-
     }
 
     @Override
     public List<Row> getData(String url, Map<String, ColumnType> columnMap) throws CsvReadException {
 
-        try{
+        try {
             List<Row> allRows = new ArrayList<>();
             //open connection
             URL sourceUrl = new URL(url);
@@ -61,24 +60,23 @@ public class CsvServiceImpl implements CsvService {
 
                 Map<String, Object> readRow;
                 while ((readRow = csvReader.read(filteredHeaders, processors.toArray(new CellProcessor[processors.size()]))) != null) {
-                    List<Object> actualRow = new ArrayList<>();
+                    List<RowItem> actualRow = new ArrayList<RowItem>();
                     for (int i = 0; i < filteredHeaders.length; i++) {
                         if (filteredHeaders[i] != null) {
-                            actualRow.add(readRow.get(filteredHeaders[i]));
+                            actualRow.add(new RowItem(filteredHeaders[i], readRow.get(filteredHeaders[i])));
                         }
                     }
                     allRows.add(new Row(actualRow));
                 }
             }
             return allRows;
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new CsvReadException("Unable to get data from CSV.", e);
         }
-
     }
 
     @Override
-    public List<SourceColumn> getColumns(String url) throws CsvReadException{
+    public List<SourceColumn> getColumns(String url) throws CsvReadException {
         List<SourceColumn> result = new ArrayList<>();
         getHeaders(url).forEach(h -> result.add(new SourceColumn(h, ColumnType.STRING)));
         return result;

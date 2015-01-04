@@ -1,7 +1,11 @@
 package pl.edu.agh.two.abrs.model.global;
 
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,7 +16,7 @@ public class GlobalSchema {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(orphanRemoval = true)
+    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaTable> tables;
 
     public GlobalSchema() {
@@ -33,11 +37,11 @@ public class GlobalSchema {
         return id;
     }
 
-    public void addTable(GlobalSchemaTable globalSchemaTable){
+    public void addTable(GlobalSchemaTable globalSchemaTable) {
         tables.add(globalSchemaTable);
     }
 
-    public void removeTable(String tableName){
+    public void removeTable(String tableName) {
         new ArrayList<>(tables).stream().filter(table -> table.getName().equals(tableName)).forEach(tables::remove);
     }
 }

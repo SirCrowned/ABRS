@@ -33,7 +33,20 @@
             <select id="sourceId" class="form-control">
               <option th:each="source : ${sourceList}"
                       th:value="${source.id}"
-                      th:text="${source.name}">Source name</option>
+                      th:text="${source.name}">Source name
+              </option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="itemsId" class="col-sm-2 control-label">State:</label>
+
+          <div class="col-sm-6">
+            <select id="itemsId" class="form-control">
+              <option th:each="item : ${items}"
+                      th:value="${item.id}"
+                      th:text="${item.label}">State name
+              </option>
             </select>
           </div>
         </div>
@@ -51,7 +64,8 @@
           type: "POST",
           data: {
             name: $('#name').val(),
-            sourceId: $('#sourceId').val()
+            sourceId: $('#sourceId').val(),
+            itemId: $('#itemsId').val()
           }
         }).done(function (data) {
           if (data == "OK") {

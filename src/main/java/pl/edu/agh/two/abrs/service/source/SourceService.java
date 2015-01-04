@@ -8,6 +8,7 @@ import pl.edu.agh.two.abrs.model.SourcePropertiesType;
 import pl.edu.agh.two.abrs.model.SourceType;
 import pl.edu.agh.two.abrs.repository.SourcePropertiesRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
+import pl.edu.agh.two.abrs.service.cron.CronService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +21,9 @@ public class SourceService {
 
     @Autowired
     private SourcePropertiesRepository sourcePropertiesRepository;
+
+    @Autowired
+    private CronService cronService;
 
     public boolean addSourceDatabase(String name, String host, String port, String user, String password, String database, String table) {
         Source source = new Source(name, SourceType.DATABASE);
@@ -53,6 +57,8 @@ public class SourceService {
         source.setSourceProperties(sourcePropertiesList);
         source = sourceRepository.saveAndFlush(source);
 
+        cronService.addRefreshingTask(source);
+
         return source != null;
     }
 
@@ -67,6 +73,8 @@ public class SourceService {
 
         source.setSourceProperties(sourcePropertiesList);
         source = sourceRepository.saveAndFlush(source);
+
+        cronService.addRefreshingTask(source);
 
         return source != null;
     }

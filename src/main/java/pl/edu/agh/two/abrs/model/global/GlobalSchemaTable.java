@@ -1,8 +1,21 @@
 package pl.edu.agh.two.abrs.model.global;
 
-import javax.persistence.*;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
+import pl.edu.agh.two.abrs.model.graph.GraphItem;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
+
+//import javax.persistence.CascadeType;
 
 @Entity
 public class GlobalSchemaTable {
@@ -13,6 +26,13 @@ public class GlobalSchemaTable {
 
     @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
     private List<GlobalSchemaColumn> columns;
+
+    @OneToMany(fetch = FetchType.EAGER)
+    @Cascade({CascadeType.SAVE_UPDATE})
+    private List<GlobalSchemaRecord> records = new LinkedList<GlobalSchemaRecord>();
+
+    @OneToOne(cascade = javax.persistence.CascadeType.DETACH)
+    private GraphItem graphItem;
 
     private String name;
 
@@ -37,5 +57,24 @@ public class GlobalSchemaTable {
 
     public String getName() {
         return name;
+    }
+
+    public List<GlobalSchemaRecord> getRecords() {
+        return new ArrayList<GlobalSchemaRecord>(records);
+    }
+
+    public void addRecord(GlobalSchemaRecord record) {
+        if (record == null) {
+            throw new IllegalArgumentException();
+        }
+        records.add(record);
+    }
+
+    public GraphItem getGraphItem() {
+        return graphItem;
+    }
+
+    public void setGraphItem(GraphItem graphItem) {
+        this.graphItem = graphItem;
     }
 }

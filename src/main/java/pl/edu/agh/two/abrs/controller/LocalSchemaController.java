@@ -31,11 +31,11 @@ public class LocalSchemaController {
     @RequestMapping(value = "/add/", method = RequestMethod.POST)
     public
     @ResponseBody
-    String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId) {
+    String addLocalSchema(@RequestParam("name") String name, @RequestParam("sourceId") long sourceId, @RequestParam("itemId") long itemId) {
 
         List<LocalSchemaColumn> columns = new ArrayList<>();
         try {
-            for(SourceColumn column : metaDataService.getMetadata(sourceId)) {
+            for (SourceColumn column : metaDataService.getMetadata(sourceId)) {
                 LocalSchemaColumn local = new LocalSchemaColumn();
                 local.setName(column.getName());
                 local.setSourceName(column.getName());
@@ -48,8 +48,7 @@ public class LocalSchemaController {
             return "ERROR";
         }
 
-
-        if (localSchemaService.addLocalSchema(name, sourceId, columns)) {
+        if (localSchemaService.addLocalSchema(name, sourceId, itemId, columns)) {
             return "OK";
         } else {
             return "ERROR";
@@ -57,7 +56,9 @@ public class LocalSchemaController {
     }
 
     @RequestMapping(value = "/remove", method = RequestMethod.POST)
-    public @ResponseBody String removeLocalSchema(@RequestParam("id") long id) {
+    public
+    @ResponseBody
+    String removeLocalSchema(@RequestParam("id") long id) {
         localSchemaService.removeLocalSchema(id);
         return "OK";
     }
@@ -72,12 +73,16 @@ public class LocalSchemaController {
 
     public static class EditRequest {
         public long localSchemaId;
+
         public ArrayList<Column> columns;
 
         public static class Column {
             public String name;
+
             public String sourceName;
+
             public String type;
+
             public String transformation;
         }
     }

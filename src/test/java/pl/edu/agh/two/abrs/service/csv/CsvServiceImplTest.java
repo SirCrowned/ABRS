@@ -14,10 +14,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class CsvServiceImplTest {
 
     private static final String RESOURCE = "test.csv";
+
     private static final String EXCEPTION_RESOURCE = "exception_test.csv";
 
     private CsvService service = new CsvServiceImpl();
-
 
     @Test
     public void should_get_headers() throws CsvReadException {
@@ -51,8 +51,7 @@ public class CsvServiceImplTest {
         Calendar cal = Calendar.getInstance();
         cal.set(1990, 0, 20);
         Date expected = cal.getTime();
-        assertThat((Date)result.get(2)).isEqualToIgnoringHours(expected);
-
+        assertThat((Date) result.get(2).getValue()).isEqualToIgnoringHours(expected);
     }
 
     @Test(expected = CsvReadException.class)
@@ -62,6 +61,5 @@ public class CsvServiceImplTest {
         Map<String, ColumnType> params = new HashMap();
         params.put("name", ColumnType.DATE);
         new CsvServiceImpl().getData(resourceUrl, params);
-
     }
 }

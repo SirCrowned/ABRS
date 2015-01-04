@@ -7,9 +7,8 @@ version = '0.1'
 
 repositories {
     mavenCentral()
-    maven {
-        url "http://jade.tilab.com/maven/"
-    }
+    maven { url 'http://jade.tilab.com/maven/' }
+    maven { url 'http://repo.spring.io/milestone' }
 }
 
 dependencies {
@@ -20,7 +19,7 @@ dependencies {
     compile "org.springframework:spring-web:4.1.1.RELEASE"
     compile "org.springframework:spring-webmvc:4.1.1.RELEASE"
     compile "org.springframework:spring-orm:4.1.1.RELEASE"
-    compile 'org.springframework.data:spring-data-jpa:1.7.1.RELEASE'
+    compile 'org.springframework.data:spring-data-jpa:1.8.0.M1'
     compile 'com.fasterxml.jackson.core:jackson-core:2.4.3'
     compile 'com.fasterxml.jackson.core:jackson-databind:2.4.3'
     compile 'com.fasterxml.jackson.core:jackson-annotations:2.4.3'
@@ -32,6 +31,8 @@ dependencies {
     compile "com.tilab.jade:jade:4.3.2"
     compile 'org.codehaus.jackson:jackson-mapper-asl:1.9.13'
     compile 'org.codehaus.jackson:jackson-core-asl:1.9.13'
+    compile 'com.itextpdf:itextpdf:5.5.3'
+    compile 'org.jfree:jfreechart:1.0.19'
     compile 'it.sauronsoftware.cron4j:cron4j:2.2.5'
     compile group: 'com.h2database', name: 'h2', version: '1.4.+'
     runtime 'mysql:mysql-connector-java:5.1.34'

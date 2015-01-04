@@ -2,6 +2,7 @@ package pl.edu.agh.two.abrs.service.db;
 
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.RowItem;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.SourceColumn;
 
@@ -55,9 +56,11 @@ public class DbReaderServiceImpl implements DbReaderService {
             ResultSetMetaData metaData = resultSet.getMetaData();
 
             while (resultSet.next()) {
-                List<Object> fields = new ArrayList<>();
+                List<RowItem> fields = new ArrayList<>();
                 for (int i = 0; i < metaData.getColumnCount(); i++) {
-                    fields.add(resultSet.getObject(i + 1));
+                    String columnLabel = metaData.getColumnLabel(i + 1);
+                    Object value = resultSet.getObject(i + 1);
+                    fields.add(new RowItem(columnLabel, value));
                 }
                 rows.add(new Row(fields));
             }
