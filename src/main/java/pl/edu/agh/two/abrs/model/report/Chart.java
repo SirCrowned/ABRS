@@ -36,6 +36,10 @@ public class Chart extends ReportElement {
         this.yLabel = Optional.of(yLabel);
     }
 
+    public void setPairs(List<Pair<Object, Object>> pairs) {
+        this.pairs = pairs;
+    }
+
     public void addPair(Pair<Object, Object> pair) {
         pairs.add(pair);
     }
