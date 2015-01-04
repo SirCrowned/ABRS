@@ -9,8 +9,6 @@ import pl.edu.agh.two.abrs.model.report.ReportElement;
 import pl.edu.agh.two.abrs.model.report.Table;
 import pl.edu.agh.two.abrs.model.report.schema.ChartSchema;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
-import pl.edu.agh.two.abrs.repository.ChartSchemaRepository;
-import pl.edu.agh.two.abrs.repository.ReportSchemaRepository;
 import pl.edu.agh.two.abrs.service.globalSchema.GlobalSchemaService;
 
 import java.util.ArrayList;
@@ -18,12 +16,6 @@ import java.util.List;
 
 @Service
 public class ReportService {
-
-    @Autowired
-    private ReportSchemaRepository reportSchemaRepository;
-
-    @Autowired
-    private ChartSchemaRepository chartSchemaRepository;
 
     @Autowired
     private GlobalSchemaService gsService;
