@@ -126,7 +126,7 @@ public class ReportSchemaController {
         HttpHeaders header = new HttpHeaders();
         header.setContentType(new MediaType("application", "pdf"));
         header.set("Content-Disposition",
-                   "attachment; filename=" + file.getName());
+                   String.format("attachment; filename=%s_%s.pdf", reportSchema.getName(), System.currentTimeMillis()));
         header.setContentLength(documentBody.length);
         return new HttpEntity<byte[]>(documentBody, header);
     }
