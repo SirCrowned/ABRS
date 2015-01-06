@@ -10,69 +10,73 @@ import javax.persistence.Id;
 @Entity
 public class ChartSchema {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String name;
+	private String name;
 
-    @Enumerated(value = EnumType.STRING)
-    private ChartType type;
+	@Enumerated(value = EnumType.STRING)
+	private ChartType type;
 
-    private String table;
+	private String table;
 
-    private String xAxisColumn;
+	private String xAxisColumn;
 
-    private String yAxisColumn;
+	private String yAxisColumn;
 
-    public ChartSchema() {
-    }
+	public ChartSchema() {
+	}
 
-    public ChartSchema(String name, ChartType type, String table, String xAxisColumn, String yAxisColumn) {
-        this.name = name;
-        this.type = type;
-        this.table = table;
-        this.xAxisColumn = xAxisColumn;
-        this.yAxisColumn = yAxisColumn;
-    }
+	public ChartSchema(String name, ChartType type, String table, String xAxisColumn, String yAxisColumn) {
+		this.name = name;
+		this.type = type;
+		this.table = table;
+		this.xAxisColumn = xAxisColumn;
+		this.yAxisColumn = yAxisColumn;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public ChartType getType() {
-        return type;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public void setType(ChartType type) {
-        this.type = type;
-    }
+	public ChartType getType() {
+		return type;
+	}
 
-    public String getTable() {
-        return table;
-    }
+	public void setType(ChartType type) {
+		this.type = type;
+	}
 
-    public void setTable(String table) {
-        this.table = table;
-    }
+	public String getTable() {
+		return table;
+	}
 
-    public String getxAxisColumn() {
-        return xAxisColumn;
-    }
+	public void setTable(String table) {
+		this.table = table;
+	}
 
-    public void setxAxisColumn(String xAxisColumn) {
-        this.xAxisColumn = xAxisColumn;
-    }
+	public String getxAxisColumn() {
+		return xAxisColumn;
+	}
 
-    public String getyAxisColumn() {
-        return yAxisColumn;
-    }
+	public void setxAxisColumn(String xAxisColumn) {
+		this.xAxisColumn = xAxisColumn;
+	}
 
-    public void setyAxisColumn(String yAxisColumn) {
-        this.yAxisColumn = yAxisColumn;
-    }
+	public String getyAxisColumn() {
+		return yAxisColumn;
+	}
+
+	public void setyAxisColumn(String yAxisColumn) {
+		this.yAxisColumn = yAxisColumn;
+	}
 }

@@ -1,65 +1,44 @@
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
-  <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
-  <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
-</head>
-<body>
+  <head>
+    <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+  </head>
+  <body>
 
-<div th:include="fragments :: header"></div>
+    <div th:include="fragments :: header"></div>
 
-<div class="container">
-  <div class="alert alert-success" role="alert" id="ok" style="display: none">
-    <p>Local schema has been removed.</p>
-  </div>
-  <div class="alert alert-danger" role="alert" id="error-remove" style="display: none">
-    <p>Error while removing local schema.</p>
-  </div>
-  <div class="alert alert-danger" role="alert" id="error-edit" style="display: none">
-    <p>Error while editing schema meta data.</p>
-  </div>
-  <h1>Local Schemas List</h1>
+    <div class="container">
+      <div class="alert alert-success" role="alert" id="ok" style="display: none">
+        <p>Local schema has been removed.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error-remove" style="display: none">
+        <p>Error while removing local schema.</p>
+      </div>
+      <div class="alert alert-danger" role="alert" id="error-edit" style="display: none">
+        <p>Error while editing schema meta data.</p>
+      </div>
+      <h1>Local Schemas List</h1>
 
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th scope="col">ID</th>
-        <th scope="col">Name</th>
-        <th scope="col">Source</th>
-        <th scope="col">State</th>
-        <th scope="col">Columns</th>
-        <th scope="col">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr th:each="localSchema : ${localSchemaList}" th:attr="data-id=${localSchema.id}" class="schema-definition">
-        <td th:text="${localSchema.id}"></td>
-        <td th:text="${localSchema.name}"></td>
-        <td th:text="${localSchema.source.name}"></td>
-        <td th:text="${localSchema.graphItem.label}">null</td>
-        <td style="width: 700px;">
-          <div class="list">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th scope="col">Column name</th>
-                  <th scope="col">Source column name</th>
-                  <th scope="col">Type</th>
-                  <th scope="col">Transformation</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr th:each="column : ${localSchema.localSchemaColumn}">
-                  <td th:text="${column.name}"></td>
-                  <td th:text="${column.sourceName}"></td>
-                  <td th:text="${column.type.toString()}"></td>
-                  <td th:text="${column.transformation}"></td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div class="edit-form" style="display: none">
-            <form th:id="${'form-'+localSchema.id}" role="form">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th scope="col">ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Source</th>
+            <th scope="col">State</th>
+            <th scope="col">Columns</th>
+            <th scope="col">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr th:each="localSchema : ${localSchemaList}" th:attr="data-id=${localSchema.id}" class="schema-definition">
+          <td th:text="${localSchema.id}"></td>
+          <td th:text="${localSchema.name}"></td>
+          <td th:text="${localSchema.source.name}"></td>
+          <td th:text="${localSchema.graphItem.label}">null</td>
+          <td style="width: 700px;">
+            <div class="list">
               <table class="table">
                 <thead>
                   <tr>
@@ -67,112 +46,133 @@
                     <th scope="col">Source column name</th>
                     <th scope="col">Type</th>
                     <th scope="col">Transformation</th>
-                    <th scope="col"></th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr th:each="column : ${localSchema.localSchemaColumn}">
-                    <td>
-                      <input type="text" th:value="${column.name}" class="form-control column"/>
-                    </td>
-                    <td>
-                      <input type="text" th:value="${column.sourceName}" class="form-control source-column"/>
-                    </td>
-                    <td>
-                      <select class="form-control type">
-                        <option th:selected="${column.type.toString() == 'BOOLEAN'}" value="BOOLEAN">Boolean</option>
-                        <option th:selected="${column.type.toString() == 'INTEGER'}" value="INTEGER">Integer</option>
-                        <option th:selected="${column.type.toString() == 'DOUBLE'}" value="DOUBLE">Double</option>
-                        <option th:selected="${column.type.toString() == 'STRING'}" value="STRING">String</option>
-                        <option th:selected="${column.type.toString() == 'DATE'}" value="DATE">Date</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select class="form-control transformation">
-                        <option th:selected="${column.transformation == 'concat'}" value="concat">concat()</option>
-                        <option th:selected="${column.transformation == 'diff'}" value="diff">diff()</option>
-                        <option th:selected="${column.transformation == 'div'}" value="div">div()</option>
-                        <option th:selected="${column.transformation == 'identity'}" value="identity">identity()</option>
-                        <option th:selected="${column.transformation == 'mul'}" value="mul">mul()</option>
-                        <option th:selected="${column.transformation == 'sum'}" value="sum">sum()</option>
-                      </select>
-                    </td>
-                    <td>
-                      <a href="#" class="remove-column btn btn-danger">Remove</a>
-                    </td>
+                    <td th:text="${column.name}"></td>
+                    <td th:text="${column.sourceName}"></td>
+                    <td th:text="${column.type.toString()}"></td>
+                    <td th:text="${column.transformation}"></td>
                   </tr>
                 </tbody>
-                <tfoot>
-                  <tr class="new-column-definition">
-                    <td>
-                      <input type="text" placeholder="New column name" class="form-control new-column"/>
-                    </td>
-                    <td>
-                      <input type="text" placeholder="Source column name" class="form-control new-source-column"/>
-                    </td>
-                    <td>
-                      <select class="form-control new-type">
-                        <option value="BOOLEAN">Boolean</option>
-                        <option value="INTEGER">Integer</option>
-                        <option value="DOUBLE">Double</option>
-                        <option value="STRING">String</option>
-                        <option value="DATE">Date</option>
-                      </select>
-                    </td>
-                    <td>
-                      <select class="form-control new-transformation">
-                        <option value="concat">concat()</option>
-                        <option value="diff">diff()</option>
-                        <option value="div">div()</option>
-                        <option value="identity">identity()</option>
-                        <option value="mul">mul()</option>
-                        <option value="sum">sum()</option>
-                      </select>
-                    </td>
-                    <td>
-                      <a href="#" class="add btn btn-success">Add</a>
-                    </td>
-                  </tr>
-                </tfoot>
               </table>
-              <div class="pull-right clearfix">
-                <a href="#" class="cancel btn btn-default" th:attr="data-id=${localSchema.id}">Cancel</a>
-                <a href="#" class="save btn btn-success" th:attr="data-id=${localSchema.id}">Save</a>
-              </div>
-            </form>
-          </div>
-        </td>
-        <td>
-          <a href="#" class="edit btn btn-default" th:attr="data-id=${localSchema.id}">Edit</a>
-          <a href="#" class="remove btn btn-danger" th:attr="data-id=${localSchema.id}">Remove</a>
-        </td>
-      </tr>
-    </tbody>
-  </table>
-</div>
-<script type="text/javascript">
-  //<![CDATA[
-  jQuery(function ($) {
-    $('table tr')
-      .on('click', '.btn.edit', function (event) {
-        event.preventDefault();
-        var $parent = $(this).closest('tr.schema-definition');
-        $('.list', $parent).slideToggle();
-        $('.edit-form', $parent).slideToggle();
-      })
-      .on('click', '.btn.cancel', function (event) {
-        event.preventDefault();
-        if (confirm('Not saved changes. Are you sure?')) {
-          var $parent = $(this).closest('tr.schema-definition');
-          $('.list', $parent).slideDown();
-          $('.edit-form', $parent).slideUp();
-        }
-      })
-      .on('click', '.new-column-definition .btn.add', function (event) {
-        event.preventDefault();
-        var $parent = $(this).closest('tr.new-column-definition');
-        var $container = $('tbody', $parent.closest('table'));
-        var $column = $('<tr>\
+            </div>
+            <div class="edit-form" style="display: none">
+              <form th:id="${'form-'+localSchema.id}" role="form">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th scope="col">Column name</th>
+                      <th scope="col">Source column name</th>
+                      <th scope="col">Type</th>
+                      <th scope="col">Transformation</th>
+                      <th scope="col"></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr th:each="column : ${localSchema.localSchemaColumn}">
+                      <td>
+                        <input type="text" th:value="${column.name}" class="form-control column" />
+                      </td>
+                      <td>
+                        <input type="text" th:value="${column.sourceName}" class="form-control source-column" />
+                      </td>
+                      <td>
+                        <select class="form-control type">
+                          <option th:selected="${column.type.toString() == 'BOOLEAN'}" value="BOOLEAN">Boolean</option>
+                          <option th:selected="${column.type.toString() == 'INTEGER'}" value="INTEGER">Integer</option>
+                          <option th:selected="${column.type.toString() == 'DOUBLE'}" value="DOUBLE">Double</option>
+                          <option th:selected="${column.type.toString() == 'STRING'}" value="STRING">String</option>
+                          <option th:selected="${column.type.toString() == 'DATE'}" value="DATE">Date</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control transformation">
+                          <option th:selected="${column.transformation == 'concat'}" value="concat">concat()</option>
+                          <option th:selected="${column.transformation == 'diff'}" value="diff">diff()</option>
+                          <option th:selected="${column.transformation == 'div'}" value="div">div()</option>
+                          <option th:selected="${column.transformation == 'identity'}" value="identity">identity()</option>
+                          <option th:selected="${column.transformation == 'mul'}" value="mul">mul()</option>
+                          <option th:selected="${column.transformation == 'sum'}" value="sum">sum()</option>
+                        </select>
+                      </td>
+                      <td>
+                        <a href="#" class="remove-column btn btn-danger">Remove</a>
+                      </td>
+                    </tr>
+                  </tbody>
+                  <tfoot>
+                    <tr class="new-column-definition">
+                      <td>
+                        <input type="text" placeholder="New column name" class="form-control new-column" />
+                      </td>
+                      <td>
+                        <input type="text" placeholder="Source column name" class="form-control new-source-column" />
+                      </td>
+                      <td>
+                        <select class="form-control new-type">
+                          <option value="BOOLEAN">Boolean</option>
+                          <option value="INTEGER">Integer</option>
+                          <option value="DOUBLE">Double</option>
+                          <option value="STRING">String</option>
+                          <option value="DATE">Date</option>
+                        </select>
+                      </td>
+                      <td>
+                        <select class="form-control new-transformation">
+                          <option value="concat">concat()</option>
+                          <option value="diff">diff()</option>
+                          <option value="div">div()</option>
+                          <option value="identity">identity()</option>
+                          <option value="mul">mul()</option>
+                          <option value="sum">sum()</option>
+                        </select>
+                      </td>
+                      <td>
+                        <a href="#" class="add btn btn-success">Add</a>
+                      </td>
+                    </tr>
+                  </tfoot>
+                </table>
+                <div class="pull-right clearfix">
+                  <a href="#" class="cancel btn btn-default" th:attr="data-id=${localSchema.id}">Cancel</a>
+                  <a href="#" class="save btn btn-success" th:attr="data-id=${localSchema.id}">Save</a>
+                </div>
+              </form>
+            </div>
+          </td>
+          <td>
+             <a href="#" class="edit btn btn-default" th:attr="data-id=${localSchema.id}">Edit</a>
+             <a href="#" class="remove btn btn-danger" th:attr="data-id=${localSchema.id}">Remove</a>
+          </td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+    <script type="text/javascript">
+    //<![CDATA[
+      jQuery(function($) {
+        $('table tr')
+          .on('click', '.btn.edit', function (event) {
+            event.preventDefault();
+            var $parent = $(this).closest('tr.schema-definition');
+            $('.list', $parent).slideToggle();
+            $('.edit-form', $parent).slideToggle();
+          })
+          .on('click', '.btn.cancel', function (event) {
+            event.preventDefault();
+            if (confirm('Not saved changes. Are you sure?')) {
+              var $parent = $(this).closest('tr.schema-definition');
+              $('.list', $parent).slideDown();
+              $('.edit-form', $parent).slideUp();
+            }
+          })
+          .on('click', '.new-column-definition .btn.add', function(event) {
+            event.preventDefault();
+            var $parent = $(this).closest('tr.new-column-definition');
+            var $container = $('tbody', $parent.closest('table'));
+            var $column = $('<tr>\
               <td>\
                 <input type="text" class="form-control column" />\
               </td>\
@@ -204,91 +204,91 @@
               </td>\
             </tr>');
 
-        var $newColumn = $('input.new-column', $parent),
-          $newSourceColumn = $('input.new-source-column', $parent),
-          $newType = $('select.new-type', $parent),
-          $newTransformation = $('select.new-transformation', $parent);
-        $('input.column', $column).val($newColumn.val());
-        $('input.source-column', $column).val($newSourceColumn.val());
-        $('select.type', $column).val($newType.val());
-        $('select.transformation', $column).val($newTransformation.val());
-        $newColumn.val('');
-        $newSourceColumn.val('');
-        $newType.val('');
-        $newTransformation.val('');
+            var $newColumn = $('input.new-column', $parent),
+              $newSourceColumn = $('input.new-source-column', $parent),
+              $newType = $('select.new-type', $parent),
+              $newTransformation = $('select.new-transformation', $parent);
+            $('input.column', $column).val($newColumn.val());
+            $('input.source-column', $column).val($newSourceColumn.val());
+            $('select.type', $column).val($newType.val());
+            $('select.transformation', $column).val($newTransformation.val());
+            $newColumn.val('');
+            $newSourceColumn.val('');
+            $newType.val('');
+            $newTransformation.val('');
 
-        $column.appendTo($container);
-      })
-      .on('click', '.btn.remove-column', function (event) {
-        event.preventDefault();
-        if (confirm('Are you sure?')) {
-          $(this).closest('tr').remove();
-        }
-      })
-      .on('click', '.btn.save', function (event) {
-        event.preventDefault();
-        var $parent = $(this).closest('tr.schema-definition');
-        columns = [];
-        $('form tbody > tr', $parent).each(function () {
-          var $this = $(this);
-          columns.push({
-            name: $('input.column', $this).val(),
-            sourceName: $('input.source-column', $this).val(),
-            type: $('select.type', $this).val(),
-            transformation: $('select.transformation', $this).val()
-          });
-        });
-
-        $.ajax({
-          url: "http://localhost:8080/localSchema/edit/",
-          type: "POST",
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          data: JSON.stringify({
-            localSchemaId: $parent.data('id'),
-            columns: columns
+            $column.appendTo($container);
           })
-        }).done(function (data) {
-          window.console.log(data);
-          if (data == "OK") {
-            window.location.href = "http://localhost:8080/localSchemaList/";
-          } else {
-            $("#error-edit").slideDown();
-            setTimeout(function () {
-              $("#error-edit").slideUp();
-            }, 5000);
-          }
-        });
-      })
-      .on('click', '.btn.remove', function (event) {
-        event.preventDefault();
-        if (confirm('Are you sure?')) {
-          var $item = $(this).closest('tr');
-          $.ajax({
-            url: "http://localhost:8080/localSchema/remove",
-            type: "POST",
-            data: {
-              id: $(this).data('id')
+          .on('click', '.btn.remove-column', function(event) {
+            event.preventDefault();
+            if (confirm('Are you sure?')) {
+              $(this).closest('tr').remove();
             }
-          }).done(function (data) {
-            if (data == "OK") {
-              $("#ok").slideDown();
-              setTimeout(function () {
-                $("#ok").slideUp();
-              }, 5000);
-              $item.remove();
-            } else {
-              $("#error-remove").slideDown();
-              setTimeout(function () {
-                $("#error-remove").slideUp();
-              }, 5000);
+          })
+          .on('click', '.btn.save', function(event) {
+            event.preventDefault();
+            var $parent = $(this).closest('tr.schema-definition');
+            columns = [];
+            $('form tbody > tr', $parent).each(function(){
+              var $this = $(this);
+              columns.push({
+                name: $('input.column', $this).val(),
+                sourceName: $('input.source-column', $this).val(),
+                type: $('select.type', $this).val(),
+                transformation: $('select.transformation', $this).val()
+              });
+            });
+
+            $.ajax({
+              url: "http://localhost:8080/localSchema/edit/",
+              type: "POST",
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              data: JSON.stringify({
+                localSchemaId: $parent.data('id'),
+                columns: columns
+              })
+            }).done(function (data) {
+              window.console.log(data);
+              if (data == "OK") {
+                window.location.href = "http://localhost:8080/localSchemaList/";
+              } else {
+                $("#error-edit").slideDown();
+                setTimeout(function () {
+                  $("#error-edit").slideUp();
+                }, 5000);
+              }
+            });
+          })
+          .on('click', '.btn.remove', function(event){
+            event.preventDefault();
+            if (confirm('Are you sure?')) {
+              var $item = $(this).closest('tr');
+              $.ajax({
+                url: "http://localhost:8080/localSchema/remove",
+                type: "POST",
+                data: {
+                  id: $(this).data('id')
+                }
+              }).done(function (data) {
+                if (data == "OK") {
+                  $("#ok").slideDown();
+                  setTimeout(function () {
+                    $("#ok").slideUp();
+                  }, 5000);
+                  $item.remove();
+                } else {
+                  $("#error-remove").slideDown();
+                  setTimeout(function () {
+                    $("#error-remove").slideUp();
+                  }, 5000);
+                }
+              });
             }
           });
-        }
       });
-  });
-  //]]>
-</script>
-</body>
+      //]]>
+    </script>
+  </body>
 </html>

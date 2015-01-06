@@ -1,0 +1,317 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <script th:src="@{https:////ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+  <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+  <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"/>
+  <link th:href="@{/resources/css/main.css}" rel="stylesheet"/>
+</head>
+<body>
+
+<div th:include="fragments :: header"></div>
+<div class="container">
+  <div class="new-report-form-panel">
+    <h1 th:text="${reportSchema}? 'Edit report template' : 'New report template'"></h1>
+    <input id="report-name" class="form-control" type="text" placeholder="Report name"
+           th:value="${reportSchema}? ${reportSchema.name} : ''"/>
+
+    <div class="report-element-panels panel-group">
+
+      <!-- Existing tables and charts -->
+      <div th:if="${reportSchema}">
+        <div class="report-table-panel panel panel-default" th:each="table : ${reportSchema.tables}"
+             data-element-type="table" th:attr="data-table-name=${table}">
+          <div class="panel-heading clearfix">
+            <h4 class="panel-title pull-left" th:text="${table}"></h4>
+            <button type="button" class="remove-button btn btn-danger pull-right">Remove</button>
+          </div>
+        </div>
+        <div class="report-chart-panel panel panel-default" th:each="chart : ${reportSchema.charts}"
+             data-element-type="chart"
+             th:attr="data-chart-id=${chart.id},
+                    data-chart-name=${chart.name},
+                    data-chart-type=${chart.type},
+                    data-table-name=${chart.table},
+                    data-x-column=${chart.xAxisColumn},
+                    data-y-column=${chart.yAxisColumn}">
+          <div class="panel-heading clearfix">
+            <h4 class="panel-title pull-left" th:text="${chart.name}"></h4>
+            <button type="button" class="remove-button btn btn-danger pull-right">Remove</button>
+          </div>
+          <div class="panel-body">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Chart type</th>
+                  <th>X axis column</th>
+                  <th>Y axis column</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="chart-type" th:text="${chart.type}"></td>
+                  <td class="x-column" th:text="|${chart.table}.${chart.xAxisColumn}|"></td>
+                  <td class="y-column" th:text="|${chart.table}.${chart.yAxisColumn}|"></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Templates -->
+      <div class="report-table-panel template panel panel-default">
+        <div class="panel-heading clearfix">
+          <h4 class="panel-title pull-left"></h4>
+          <button type="button" class="btn btn-danger pull-right">Remove</button>
+        </div>
+      </div>
+      <div class="report-chart-panel template panel panel-default">
+        <div class="panel-heading clearfix">
+          <h4 class="panel-title pull-left"></h4>
+          <button type="button" class="btn btn-danger pull-right">Remove</button>
+        </div>
+        <div class="panel-body">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Chart type</th>
+                <th>X axis column</th>
+                <th>Y axis column</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="chart-type"></td>
+                <td class="x-column"></td>
+                <td class="y-column"></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div>
+    <button type="button" class="btn btn-primary" id="saveReportButton">
+      Save Report
+    </button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addTableModal">
+      Add Table
+    </button>
+    <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addChartModal">
+      Add Chart
+    </button>
+  </div>
+</div>
+
+<!-- Add Table Modal -->
+<div class="modal fade" id="addTableModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Add table</h4>
+      </div>
+      <div class="modal-body">
+        <label for="global-schema-table-select">Global schema table:</label>
+        <select id="global-schema-table-select" class="form-control">
+          <option th:each="table : ${globalSchemaTables}" th:text="${table.name}"></option>
+        </select>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addTableButton">Add table</button>
+        <button type="button" class="btn btn-default" id="cancelAddTableButton" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Add Chart Modal -->
+<div class="modal fade" id="addChartModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span>
+        </button>
+        <h4 class="modal-title" id="myModalLabel">Add chart</h4>
+      </div>
+      <div class="modal-body">
+        <form class="form-horizontal" role="form">
+          <div class="form-group">
+            <label for="chart-name" class="col-sm-4 control-label">Chart name:</label>
+
+            <div class="col-sm-8">
+              <input type="text" class="form-control" id="chart-name"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="chart-type-select" class="col-sm-4 control-label">Chart type:</label>
+
+            <div class="col-sm-8">
+              <select id="chart-type-select" class="form-control">
+                <option th:each="type : ${chartTypes}" th:text="${type}"></option>
+              </select>
+            </div>
+          </div>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Table</th>
+                <th>X axis column</th>
+                <th>Y axis column</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="columns-table">
+              <tr>
+                <td>
+                  <select id="table-select" class="form-control">
+                    <option th:each="table : ${globalSchemaTables}" th:text="${table.name}"></option>
+                  </select>
+                </td>
+                <td>
+                  <select id="x-column-select" class="form-control">
+                    <option th:each="column : ${firstTableColumns}" th:text="${column.name}"></option>
+                  </select>
+                </td>
+                <td>
+                  <select id="y-column-select" class="form-control">
+                    <option th:each="column : ${firstTableColumns}" th:text="${column.name}"></option>
+                  </select>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" id="addChartButton">Add chart</button>
+        <button type="button" class="btn btn-default" id="cancelAddChartButton" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script th:inline="javascript">
+  //<![CDATA[
+  jQuery(function ($) {
+
+    var tablesList = /*[[${globalSchemaTables}]]*/ [];
+    var tables = {};
+    tablesList.forEach(function (e) {
+      tables[e.name] = e.columns;
+    });
+
+    $("#table-select").change(function () {
+      var chosenTable = $(this).val();
+      var xSelect = $("#x-column-select");
+      var ySelect = $("#y-column-select");
+      xSelect.empty();
+      ySelect.empty();
+      tables[chosenTable].forEach(function (column) {
+        xSelect.append($("<option></option>").text(column.name));
+        ySelect.append($("<option></option>").text(column.name));
+      });
+    });
+
+    $("#addTableButton").click(function () {
+      var tableName = $("#global-schema-table-select").val();
+      var newElement = $(".report-table-panel.template").clone();
+      $(".report-element-panels").append(newElement);
+
+      newElement.removeClass("template");
+      newElement.data("element-type", "table");
+      newElement.data("table-name", tableName);
+      newElement.find(".panel-title").text("Table: " + tableName);
+
+      $("#cancelAddTableButton").click();
+    });
+
+    $("#addChartButton").click(function () {
+      var chartName = $("#chart-name").val();
+      var chartType = $("#chart-type-select").val();
+      var tableName = $("#table-select").val();
+      var xColumnName = $("#x-column-select").val();
+      var yColumnName = $("#y-column-select").val();
+
+      var newElement = $(".report-chart-panel.template").clone();
+      $(".report-element-panels").append(newElement);
+
+      newElement.removeClass("template");
+      newElement.data("element-type", "chart");
+      newElement.data("chart-name", chartName);
+      newElement.data("chart-type", chartType);
+      newElement.data("table-name", tableName);
+      newElement.data("x-column", xColumnName);
+      newElement.data("y-column", yColumnName);
+      newElement.find(".panel-title").text("Chart: " + chartName);
+      newElement.find(".chart-type").text(chartType);
+      newElement.find(".x-column").text(tableName + "." + xColumnName);
+      newElement.find(".y-column").text(tableName + "." + yColumnName);
+
+      $("#cancelAddChartButton").click();
+    });
+
+    $(".remove-button").click(function () {
+      $(this).closest('.report-table-panel, .report-chart-panel').remove();
+    });
+
+    var sendPost = function (url, redirectUrl, data) {
+      $.ajax({
+        url: url,
+        type: "POST",
+        contentType: 'application/json',
+        data: data
+      }).done(function (data) {
+        if (data == "OK") {
+          window.location.replace(redirectUrl);
+        } else {
+          alert(data);
+        }
+      })
+    };
+
+    $("#saveReportButton").click(function () {
+      var reportName = $("#report-name").val();
+      var tables = [];
+      var charts = [];
+      $(".report-element-panels .panel").filter('div:not(".template")').each(function (_, element) {
+        element = $(element);
+        var type = element.data("element-type")
+        if (type == "table") {
+          tables.push(element.data("table-name"));
+        } else if (type == "chart") {
+          charts.push({
+            id: element.data("chart-id"),
+            name: element.data("chart-name"),
+            type: element.data("chart-type"),
+            table: element.data("table-name"),
+            xAxisColumn: element.data("x-column"),
+            yAxisColumn: element.data("y-column")
+          });
+        }
+      });
+
+      var id = /*[[${reportId}]]*/ undefined;
+      var createUrl = /*[[@{/report/create}]]*/ "/report/create";
+      var editUrl = /*[[@{/report/edit}]]*/ "/report/edit";
+      var redirectUrl = /*[[@{/report/list}]]*/ "/report/list";
+
+      var report = JSON.stringify({
+        id: id,
+        name: reportName,
+        tables: tables,
+        charts: charts
+      });
+
+      var url = id ? editUrl : createUrl;
+      sendPost(url, redirectUrl, report);
+    });
+
+  });
+  //]]>
+</script>
+</body>
+</html>

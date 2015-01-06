@@ -10,63 +10,70 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
+import java.util.ArrayList;
 import java.util.List;
+
+import pl.edu.agh.two.abrs.model.report.Chart;
 
 @Entity
 public class ReportSchema {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    private String name;
+	private String name;
 
-    @ElementCollection
-    @CollectionTable(name = "reportTable", joinColumns = @JoinColumn(name = "reportSchemaId"))
-    @Column(name = "reportTable")
-    private List<String> tables;
+	@Column(name = "reportTable")
+	private ArrayList<String> tables;
 
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<ChartSchema> charts;
+	@OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<ChartSchema> charts;
 
-    public ReportSchema() {
-    }
+	public ReportSchema() {
+	}
 
-    public ReportSchema(String name, List<String> tables, List<ChartSchema> charts) {
-        this.name = name;
-        this.tables = tables;
-        this.charts = charts;
-    }
+	public ReportSchema(String name, ArrayList<String> tables, List<ChartSchema> charts) {
+		this.name = name;
+		this.tables = tables;
+		this.charts = charts;
+	}
 
-    public Long getId() {
-        return id;
-    }
+	public Long getId() {
+		return id;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public List<String> getTables() {
-        return tables;
-    }
+	public ArrayList<String> getTables() {
+		return tables;
+	}
 
-    public void setTables(List<String> tables) {
-        this.tables = tables;
-    }
+	public void setTables(ArrayList<String> tables) {
+		this.tables = tables;
+	}
 
-    public List<ChartSchema> getCharts() {
-        return charts;
-    }
+	public List<ChartSchema> getCharts() {
+		return charts;
+	}
 
-    public void setCharts(List<ChartSchema> charts) {
-        this.charts = charts;
-    }
+	public void setCharts(List<ChartSchema> charts) {
+		this.charts = charts;
+	}
+
+	public void addChart(ChartSchema chart){
+		this.charts.add(chart);
+	}
 }

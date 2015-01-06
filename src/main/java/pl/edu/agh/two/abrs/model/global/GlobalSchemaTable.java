@@ -1,9 +1,8 @@
 package pl.edu.agh.two.abrs.model.global;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import pl.edu.agh.two.abrs.model.graph.GraphItem;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -11,70 +10,78 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-//import javax.persistence.CascadeType;
-
 @Entity
 public class GlobalSchemaTable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private long id;
 
-    @OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<GlobalSchemaColumn> columns;
+	@OneToMany(orphanRemoval = true, fetch = FetchType.EAGER)
+	private List<GlobalSchemaColumn> columns;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @Cascade({CascadeType.SAVE_UPDATE})
-    private List<GlobalSchemaRecord> records = new LinkedList<GlobalSchemaRecord>();
+	@OneToMany(fetch = FetchType.EAGER)
+	private List<GlobalSchemaRecord> records = new LinkedList<>();
 
-    @OneToOne(cascade = javax.persistence.CascadeType.DETACH)
-    private GraphItem graphItem;
+	@OneToOne(cascade = CascadeType.DETACH)
+	private GraphItem graphItem;
 
-    private String name;
+	private String name;
 
-    public GlobalSchemaTable() {
-    }
+	public GlobalSchemaTable() {
+	}
 
-    public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns) {
-        if (columns == null || name == null) {
-            throw new IllegalArgumentException();
-        }
-        this.columns = columns;
-        this.name = name;
-    }
+	public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns) {
+		if (columns == null || name == null) {
+			throw new IllegalArgumentException();
+		}
+		this.columns = columns;
+		this.name = name;
+	}
 
-    public List<GlobalSchemaColumn> getColumns() {
-        return new ArrayList<>(columns);
-    }
+	public GlobalSchemaTable(String name, List<GlobalSchemaColumn> columns, List<GlobalSchemaRecord> records,
+			GraphItem graphItem) {
+		this(name, columns);
+		if (records == null || graphItem == null) {
+			throw new IllegalArgumentException();
+		}
+		this.records = records;
+		this.graphItem = graphItem;
+	}
 
-    public long getId() {
-        return id;
-    }
+	public List<GlobalSchemaColumn> getColumns() {
+		return new ArrayList<>(columns);
+	}
 
-    public String getName() {
-        return name;
-    }
+	public long getId() {
+		return id;
+	}
 
-    public List<GlobalSchemaRecord> getRecords() {
-        return new ArrayList<GlobalSchemaRecord>(records);
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void addRecord(GlobalSchemaRecord record) {
-        if (record == null) {
-            throw new IllegalArgumentException();
-        }
-        records.add(record);
-    }
+	public List<GlobalSchemaRecord> getRecords() {
+		return new ArrayList<GlobalSchemaRecord>(records);
+	}
 
-    public GraphItem getGraphItem() {
-        return graphItem;
-    }
+	public void addRecord(GlobalSchemaRecord record) {
+		if (record == null) {
+			throw new IllegalArgumentException();
+		}
+		records.add(record);
+	}
 
-    public void setGraphItem(GraphItem graphItem) {
-        this.graphItem = graphItem;
-    }
+	public GraphItem getGraphItem() {
+		return graphItem;
+	}
+
+	public void setGraphItem(GraphItem graphItem) {
+		this.graphItem = graphItem;
+	}
 }

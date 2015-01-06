@@ -48,6 +48,43 @@
       <!--</table>-->
       <!--</div>-->
       <div class="col-sm-3">
+        <table id="source" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col" th:cols="2">Source</th>
+              <th scope="col">Type</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr th:each="source : ${sourceList}">
+              <td th:text="${source.id}" th:attr="data-id=${source.id}"></td>
+              <td th:text="${source.name}" th:attr="data-id=${source.id}"></td>
+              <td th:text="${source.sourceType}" th:attr="data-id=${source.id}"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-6">
+        <table id="column" class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">Column</th>
+              <th scope="col">Type</th>
+              <th scope="col">Transform</th>
+            </tr>
+          </thead>
+          <tbody>
+            <div th:each="localSchema : ${localSchemaList}">
+              <tr th:each="column : ${localSchema.localSchemaColumn}">
+                <td th:text="${column.name}" th:attr="data-source-id=${localSchema.source.id}"></td>
+                <td th:text="${column.type}" th:attr="data-source-id=${localSchema.source.id}"></td>
+                <td th:text="${column.transformation}" th:attr="data-source-id=${localSchema.source.id}"></td>
+              </tr>
+            </div>
+          </tbody>
+        </table>
+      </div>
+      <div class="col-sm-3">
         <table id="global" class="table table-striped">
           <thead>
             <tr>
@@ -167,7 +204,7 @@
         });
 
         $('.remove').click(function (e) {
-
+          
           $.ajax({
             url: "http://localhost:8080/mapping/remove",
             type: "POST",

@@ -1,315 +1,315 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head>
-  <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
-  <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
-  <link th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css}" rel="stylesheet"/>
-  <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js}"></script>
-  <script th:src="@{http://localhost:8080/resources/js/jquery.jsPlumb-1.7.2.js}"></script>
-  <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
+  <head>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js}"></script>
+    <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js}"></script>
+    <link th:href="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/smoothness/jquery-ui.css}" rel="stylesheet"/>
+    <script th:src="@{https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/jquery-ui.min.js}"></script>
+    <script th:src="@{http://localhost:8080/resources/js/jquery.jsPlumb-1.7.2.js}"></script>
+    <link th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css}" rel="stylesheet"></link>
 
-  <style type="text/css">
-    #container {
-      border: 1px solid gray;
-      width: 1000px;
-      height: 500px;
-      top: 5px;
-    }
-
-    .item {
-      position: relative;
-      border: 1px solid black;
-      background-color: #ddddff;
-      width: 70px;
-      height: 70px;
-    }
-
-    .title {
-      padding: 10px;
-      cursor: move;
-    }
-
-    .connect {
-      position: absolute;
-      top: 50px;
-      left: 30px;
-      width: 10px;
-      height: 10px;
-      border: 1px solid black;
-      background-color: greenyellow;
-      cursor: pointer;
-    }
-
-    .labelClass {
-      border: 1px solid black;
-      background-color: #ddddff;
-    }
-  </style>
-
-</head>
-<body>
-  <div th:include="fragments :: header"></div>
-  <div class="container">
-    <button type="button" class="btn btn-default" id="save">Save</button>
-    <div id="container"/>
-  </div>
-</body>
-
-<script type="text/javascript" th:inline="javascript">
-
-/*<![CDATA[*/
-var duplicateConnections = 0;
-var labelCss = {
-  cssClass: "labelClass"
-};
-
-$('#save').on('click', function () {
-
-  function IterateDrawnElements() {  //part of save
-    var list = [];
-    $('#container').children('div.item').each(function () {
-      var pos = $(this).position()
-      var diagram_label = $(this).children('div.title').text()
-      if (diagram_label == null || diagram_label == '') {
-        diagram_label = '';
+    <style type="text/css">
+      #container {
+        border: 1px solid gray;
+        width: 1000px;
+        height: 500px;
+        top: 5px;
       }
-      item = {
-        html_id: this.id,
-        left: pos.left,
-        top: pos.top,
-        label: diagram_label
-      },
-        list.push(item);
+
+      .item {
+        position: relative;
+        border: 1px solid black;
+        background-color: #ddddff;
+        width: 70px;
+        height: 70px;
+      }
+
+      .title {
+        padding: 10px;
+        cursor: move;
+      }
+
+      .connect {
+        position: absolute;
+        top: 50px;
+        left: 30px;
+        width: 10px;
+        height: 10px;
+        border: 1px solid black;
+        background-color: greenyellow;
+        cursor: pointer;
+      }
+
+      .labelClass {
+        border: 1px solid black;
+        background-color: #ddddff;
+      }
+    </style>
+
+  </head>
+  <body>
+    <div th:include="fragments :: header"></div>
+    <div class="container">
+      <button type="button" class="btn btn-default" id="save">Save</button>
+      <div id="container"/>
+    </div>
+  </body>
+
+  <script type="text/javascript" th:inline="javascript">
+
+    /*<![CDATA[*/
+    var duplicateConnections = 0;
+    var labelCss = {
+      cssClass:"labelClass"
+    };
+
+    $('#save').on('click', function () {
+
+      function IterateDrawnElements() {  //part of save
+        var list = [];
+        $('#container').children('div.item').each(function () {
+          var pos = $(this).position()
+          var diagram_label = $(this).children('div.title').text()
+          if (diagram_label == null || diagram_label == '') {
+            diagram_label = '';
+          }
+          item = {
+            html_id: this.id,
+            left: pos.left,
+            top: pos.top,
+            label: diagram_label
+          },
+            list.push(item);
+        });
+        return list;
+      }
+
+      function IterateConnections() {  //part of save
+        var list = [];
+        var conns = jsPlumb.getConnections()
+        for (var i = 0; i < conns.length; i++) {
+          var source = conns[i].source.id;
+          var target = conns[i].target.id;
+          try {
+            var label = conns[i].getOverlay("label").labelText;
+          }
+          catch (err) {
+            label = null
+          }
+          //list.push([source, target])
+          if (source != null && target != null) {
+            conn = {
+              source: source,
+              target: target,
+              label: label
+            },
+              list.push(conn);
+          }
+          ;
+        }
+        return list;
+      }
+
+      var d_elements = IterateDrawnElements();
+      var d_conns = IterateConnections();
+
+      var wrapper = {
+        items: d_elements,
+        conn: d_conns
+      }
+
+
+      $.ajax({
+        url: "http://localhost:8080/graph/save/",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(wrapper)
+      }).done(function (data) {
+
+      });
     });
-    return list;
-  }
 
-  function IterateConnections() {  //part of save
-    var list = [];
-    var conns = jsPlumb.getConnections()
-    for (var i = 0; i < conns.length; i++) {
-      var source = conns[i].source.id;
-      var target = conns[i].target.id;
-      try {
-        var label = conns[i].getOverlay("label").labelText;
-      }
-      catch (err) {
-        label = null
-      }
-      //list.push([source, target])
-      if (source != null && target != null) {
-        conn = {
-          source: source,
-          target: target,
-          label: label
-        },
-          list.push(conn);
-      }
-      ;
-    }
-    return list;
-  }
+    jsPlumb.ready(function () {
+      jsPlumb.setContainer($('#container'));
 
-  var d_elements = IterateDrawnElements();
-  var d_conns = IterateConnections();
+      var i = 0;
+      var sources = [];
 
-  var wrapper = {
-    items: d_elements,
-    conn: d_conns
-  }
+      var initItems = /*[[${items}]]*/ [];
+      var initConn = /*[[${conn}]]*/ [];
 
+      function init() {
 
-  $.ajax({
-    url: "http://localhost:8080/graph/save/",
-    type: "POST",
-    contentType: "application/json",
-    data: JSON.stringify(wrapper)
-  }).done(function (data) {
+        for (var j = 0; j < initItems.length; j++) {
 
-  });
-});
+          var html_id = initItems[j].html_id;
+          var left = initItems[j].left;
+          var top = initItems[j].top;
+          var label = initItems[j].label;
 
-jsPlumb.ready(function () {
-  jsPlumb.setContainer($('#container'));
+          var source = $('<div>').attr('id', html_id).addClass('item');
+          sources.push(source);
 
-  var i = 0;
-  var sources = [];
-
-  var initItems = /*[[${items}]]*/ [];
-  var initConn = /*[[${conn}]]*/ [];
-
-  function init() {
-
-    for (var j = 0; j < initItems.length; j++) {
-
-      var html_id = initItems[j].html_id;
-      var left = initItems[j].left;
-      var top = initItems[j].top;
-      var label = initItems[j].label;
-
-      var source = $('<div>').attr('id', html_id).addClass('item');
-      sources.push(source);
-
-      source.bind("dblclick", function (connection, originalEvent) {
-        sources.splice(sources.indexOf(source), 1);
-      });
-
-      var title = $('<div>').addClass('title').text(label);
-
-      var connect = $('<div>').addClass('connect');
-
-      source.css({
-        'position': 'absolute',
-        'top': top,
-        'left': left
-      });
-
-      source.append(title);
-      source.append(connect);
-
-      $('#container').append(source);
-      jsPlumb.makeTarget(source, {
-        anchor: 'Continuous'
-      });
-
-      jsPlumb.makeSource(connect, {
-        parent: source,
-        anchor: 'Continuous'
-      });
-
-      jsPlumb.draggable(source, {
-        containment: 'parent'
-      });
-
-      source.dblclick(function (e) {
-        jsPlumb.detachAllConnections($(this));
-        $(this).remove();
-        e.stopPropagation();
-      });
-
-      jsPlumb.bind("connection", function (info, originalEvent) {
-        if (duplicateConnections == sources.length - 1) {
-          duplicateConnections = 0;
-          var connection = info.connection;
-
-          var labelInput = $('<input>').attr('type', 'text');
-          labelInput.css({
-            'position': 'absolute',
-            'top': originalEvent.pageY,
-            'left': originalEvent.pageX
+          source.bind("dblclick", function (connection, originalEvent) {
+            sources.splice(sources.indexOf(source), 1);
           });
 
-          $('#container').append(labelInput);
-          labelInput.focus();
-          labelInput.keyup(function (e) {
-              if (e.keyCode === 13) {
-                connection.addOverlay(["Label", {label: this.value, id: "label"}, labelCss]);
-                labelInput.remove();
-              }
+          var title = $('<div>').addClass('title').text(label);
+
+          var connect = $('<div>').addClass('connect');
+
+          source.css({
+            'position': 'absolute',
+            'top': top,
+            'left': left
+          });
+
+          source.append(title);
+          source.append(connect);
+
+          $('#container').append(source);
+          jsPlumb.makeTarget(source, {
+            anchor: 'Continuous'
+          });
+
+          jsPlumb.makeSource(connect, {
+            parent: source,
+            anchor: 'Continuous'
+          });
+
+          jsPlumb.draggable(source, {
+            containment: 'parent'
+          });
+
+          source.dblclick(function (e) {
+            jsPlumb.detachAllConnections($(this));
+            $(this).remove();
+            e.stopPropagation();
+          });
+
+          jsPlumb.bind("connection", function (info, originalEvent) {
+            if (duplicateConnections == sources.length - 1) {
+              duplicateConnections = 0;
+              var connection = info.connection;
+
+              var labelInput = $('<input>').attr('type', 'text');
+              labelInput.css({
+                'position': 'absolute',
+                'top': originalEvent.pageY,
+                'left': originalEvent.pageX
+              });
+
+              $('#container').append(labelInput);
+              labelInput.focus();
+              labelInput.keyup(function (e) {
+                  if (e.keyCode === 13) {
+                    connection.addOverlay(["Label", {label: this.value, id: "label"}, labelCss]);
+                    labelInput.remove();
+                  }
+                }
+              );
+            } else {
+              duplicateConnections++;
             }
-          );
-        } else {
-          duplicateConnections++;
+          });
+          i++;
         }
-      });
-      i++;
-    }
 
-    for (var j = 0; j < initConn.length; j++) {
-      var source = initConn[j].source;
-      var target = initConn[j].target;
-      var label = initConn[j].label;
-      var c = jsPlumb.connect({source: source, target: target, detachable: true, reattach: true});  //on init already know what kind of anchor to use!
-      if (label != null && label != 'None') {
-        c.addOverlay(["Label", {label: label, id: "label"}, labelCss]);
+        for (var j = 0; j < initConn.length; j++) {
+          var source = initConn[j].source;
+          var target = initConn[j].target;
+          var label = initConn[j].label;
+          var c = jsPlumb.connect({source: source, target: target, detachable: true, reattach: true});  //on init already know what kind of anchor to use!
+          if (label != null && label != 'None') {
+            c.addOverlay(["Label", {label: label, id: "label"}, labelCss]);
+          }
+        }
+
       }
-    }
 
-  }
+      init();
 
-  init();
+      $('#container').dblclick(function (e) {
+        var source = $('<div>').attr('id', 'source' + i).addClass('item');
+        sources.push(source);
 
-  $('#container').dblclick(function (e) {
-    var source = $('<div>').attr('id', 'source' + i).addClass('item');
-    sources.push(source);
-
-    source.bind("dblclick", function (connection, originalEvent) {
-      sources.splice(sources.indexOf(source), 1);
-    });
-
-    var title = $('<div>').addClass('title');
-
-    var stateName = $('<input>').attr('type', 'text');
-    title.append(stateName);
-
-    var connect = $('<div>').addClass('connect');
-
-    source.css({
-      'position': 'absolute',
-      'top': e.pageY,
-      'left': e.pageX
-    });
-
-    source.append(title);
-    source.append(connect);
-
-    $('#container').append(source);
-    jsPlumb.makeTarget(source, {
-      anchor: 'Continuous'
-    });
-
-    jsPlumb.makeSource(connect, {
-      parent: source,
-      anchor: 'Continuous'
-    });
-
-    jsPlumb.draggable(source, {
-      containment: 'parent'
-    });
-
-    source.dblclick(function (e) {
-      jsPlumb.detachAllConnections($(this));
-      $(this).remove();
-      e.stopPropagation();
-    });
-
-    stateName.keyup(function (e) {
-      if (e.keyCode === 13) {
-        $(this).parent().text(this.value);
-      }
-    });
-    stateName.focus();
-
-    jsPlumb.bind("connection", function (info, originalEvent) {
-      if (duplicateConnections == sources.length - 1) {
-        duplicateConnections = 0;
-        var connection = info.connection;
-
-        var labelInput = $('<input>').attr('type', 'text');
-        labelInput.css({
-          'position': 'absolute',
-          'top': originalEvent.pageY,
-          'left': originalEvent.pageX
+        source.bind("dblclick", function(connection, originalEvent) {
+          sources.splice(sources.indexOf(source), 1);
         });
 
-        $('#container').append(labelInput);
-        labelInput.focus();
-        labelInput.keyup(function (e) {
-            if (e.keyCode === 13) {
-              connection.addOverlay(["Label", {label: this.value, id: "label" }, labelCss]);
-              labelInput.remove();
-            }
+        var title = $('<div>').addClass('title');
+
+        var stateName = $('<input>').attr('type', 'text');
+        title.append(stateName);
+
+        var connect = $('<div>').addClass('connect');
+
+        source.css({
+          'position': 'absolute',
+          'top': e.pageY,
+          'left': e.pageX
+        });
+
+        source.append(title);
+        source.append(connect);
+
+        $('#container').append(source);
+        jsPlumb.makeTarget(source, {
+          anchor: 'Continuous'
+        });
+
+        jsPlumb.makeSource(connect, {
+          parent: source,
+          anchor: 'Continuous'
+        });
+
+        jsPlumb.draggable(source, {
+          containment: 'parent'
+        });
+
+        source.dblclick(function (e) {
+          jsPlumb.detachAllConnections($(this));
+          $(this).remove();
+          e.stopPropagation();
+        });
+
+        stateName.keyup(function (e) {
+          if (e.keyCode === 13) {
+            $(this).parent().text(this.value);
           }
-        );
-      } else {
-        duplicateConnections++;
-      }
+        });
+        stateName.focus();
+
+        jsPlumb.bind("connection", function (info, originalEvent) {
+          if(duplicateConnections == sources.length - 1) {
+            duplicateConnections = 0;
+            var connection = info.connection;
+
+            var labelInput = $('<input>').attr('type', 'text');
+            labelInput.css({
+              'position': 'absolute',
+              'top': originalEvent.pageY,
+              'left': originalEvent.pageX
+            });
+
+            $('#container').append(labelInput);
+            labelInput.focus();
+            labelInput.keyup(function (e) {
+                if (e.keyCode === 13) {
+                  connection.addOverlay(["Label", {label: this.value, id: "label" }, labelCss]);
+                  labelInput.remove();
+                }
+              }
+            );
+          } else {
+            duplicateConnections++;
+          }
+        });
+
+        i++;
+      });
+
     });
-
-    i++;
-  });
-
-});
-/*]]>*/
-</script>
+    /*]]>*/
+  </script>
 </html>

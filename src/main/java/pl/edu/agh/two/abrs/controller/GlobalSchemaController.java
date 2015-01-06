@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.global.GlobalSchema;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
+import pl.edu.agh.two.abrs.model.global.GlobalSchemaRecord;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
 import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.service.globalSchema.GlobalSchemaService;
@@ -81,10 +82,14 @@ public class GlobalSchemaController {
         List<GlobalSchemaTable> tables = new ArrayList<>();
         for (GlobalSchemaTable table : globalSchema.getTables()) {
             List<GlobalSchemaColumn> columns = new ArrayList<>();
-            for (GlobalSchemaColumn column : table.getColumns()) {
-                columns.add(new GlobalSchemaColumn(column.getColumnType(), column.getName()));
-            }
-            tables.add(new GlobalSchemaTable(table.getName(), columns));
+			for (GlobalSchemaColumn column : table.getColumns()) {
+				columns.add(new GlobalSchemaColumn(column.getColumnType(), column.getName()));
+			}
+			List<GlobalSchemaRecord> records = new ArrayList<>();
+			for (GlobalSchemaRecord record : table.getRecords()) {
+				records.add(new GlobalSchemaRecord(record.getValues()));
+			}
+            tables.add(new GlobalSchemaTable(table.getName(), columns, records, table.getGraphItem()));
         }
 
         return new GlobalSchema(tables);
