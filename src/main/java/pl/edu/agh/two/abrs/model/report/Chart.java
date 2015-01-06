@@ -13,6 +13,8 @@ import java.util.Optional;
 
 public class Chart extends ReportElement {
 
+    private final String type = "CHART";
+
     private final ChartType chartType;
 
     private final String name;
@@ -67,5 +69,10 @@ public class Chart extends ReportElement {
     @Override
     public Element render(RendererVisitor renderer) throws IOException, BadElementException {
         return renderer.render(this);
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 }

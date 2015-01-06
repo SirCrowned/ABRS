@@ -80,7 +80,7 @@ public class CronServiceImpl implements CronService {
 
         for (LocalSchema schema : sourceList) {
             long minutes = schema.getSource().getRefreshInterval();
-            String schedulingPattern = String.format("*/%d * * * *", minutes);
+            String schedulingPattern = String.format("* * * * *", minutes);
             scheduler.schedule(schedulingPattern, new RefreshingTask(schema.getSource()));
         }
         scheduler.start();
@@ -90,7 +90,7 @@ public class CronServiceImpl implements CronService {
     public void addRefreshingTask(Source source) {
         Scheduler scheduler = new Scheduler();
         long minutes = source.getRefreshInterval();
-        String schedulingPattern = String.format("*/%d * * * *", minutes);
+        String schedulingPattern = String.format("* * * * *", minutes);
         scheduler.schedule(schedulingPattern, new RefreshingTask(source));
         scheduler.start();
     }

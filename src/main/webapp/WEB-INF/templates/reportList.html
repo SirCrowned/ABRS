@@ -26,6 +26,12 @@
               <button type="button" class="view btn btn-default" th:attr="data-id=${reportSchema.id}">View</button>
             </td>
             <td>
+              <a th:href="|@{/report/getReport}/${reportSchema.id}|" class="show btn btn-default">Show</a>
+            </td>
+            <td>
+              <a th:href="|@{/report/getPdf}/${reportSchema.id}|" class="show btn btn-default">PDF</a>
+            </td>
+            <td>
               <a th:href="|@{/report/edit}/${reportSchema.id}|" class="edit btn btn-default">Edit</a>
             </td>
             <td>
@@ -128,6 +134,8 @@
           var id = $(event.target).data('id');
           sendPost(removeUrl + "/" + id, redirectUrl);
         });
+
+
       });
       //]]>
     </script>

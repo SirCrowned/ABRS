@@ -8,6 +8,8 @@ import java.util.List;
 
 public class Table extends ReportElement {
 
+    private final String type = "TABLE";
+
     private final String name;
 
     private final Row header;
@@ -35,5 +37,10 @@ public class Table extends ReportElement {
     @Override
     public Element render(RendererVisitor renderer) {
         return renderer.render(this);
+    }
+
+    @Override
+    public String getType() {
+        return type;
     }
 }

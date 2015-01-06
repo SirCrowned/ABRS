@@ -55,14 +55,9 @@ public class RendererVisitor {
         PdfPTable table = new PdfPTable(columnWidths);
         table.setWidthPercentage(90f);
 
-        for (Object o : header) {
-            table.addCell(o.toString());
-        }
-        for (Row row : rows) {
-            for (Object o : row) {
-                table.addCell(o.toString());
-            }
-        }
+        header.getFields().forEach(f -> table.addCell(f.getColumnLabel()));
+
+        rows.forEach(r -> r.getFields().forEach(i -> table.addCell(i.getValue().toString())));
 
         return table;
     }

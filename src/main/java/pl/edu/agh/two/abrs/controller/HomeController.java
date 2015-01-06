@@ -9,7 +9,6 @@ import pl.edu.agh.two.abrs.repository.GraphConnRepository;
 import pl.edu.agh.two.abrs.repository.GraphItemRepository;
 import pl.edu.agh.two.abrs.repository.LocalSchemaRepository;
 import pl.edu.agh.two.abrs.repository.SourceRepository;
-import pl.edu.agh.two.abrs.service.cron.CronService;
 
 @Controller
 @RequestMapping("/")
@@ -20,9 +19,6 @@ public class HomeController {
 
     @Autowired
     private LocalSchemaRepository localSchemaRepository;
-
-    @Autowired
-    private CronService cronService;
 
     @Autowired
     private GraphConnRepository graphConnRepository;

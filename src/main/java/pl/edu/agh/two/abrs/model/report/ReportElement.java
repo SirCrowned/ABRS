@@ -8,4 +8,6 @@ import java.io.IOException;
 
 public abstract class ReportElement {
     public abstract Element render(RendererVisitor renderer) throws IOException, BadElementException;
+
+    public abstract String getType();
 }

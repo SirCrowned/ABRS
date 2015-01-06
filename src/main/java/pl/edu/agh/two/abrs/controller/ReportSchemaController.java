@@ -1,7 +1,11 @@
 package pl.edu.agh.two.abrs.controller;
 
+import com.google.common.io.Files;
 import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
@@ -13,11 +17,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
+import pl.edu.agh.two.abrs.model.report.Report;
 import pl.edu.agh.two.abrs.model.report.schema.ChartType;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaTableRepository;
+import pl.edu.agh.two.abrs.service.export.ExporterException;
+import pl.edu.agh.two.abrs.service.export.ExporterService;
+import pl.edu.agh.two.abrs.service.report.ReportService;
 import pl.edu.agh.two.abrs.service.report.schema.ReportSchemaService;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +41,12 @@ public class ReportSchemaController {
 
     @Autowired
     private ReportSchemaService reportSchemaService;
+
+    @Autowired
+    private ReportService reportService;
+
+    @Autowired
+    private ExporterService exporterService;
 
     @ExceptionHandler(Exception.class)
     public
@@ -91,6 +107,28 @@ public class ReportSchemaController {
     @ResponseBody
     ReportSchema listReports(@RequestParam("schemaId") long schemaId) {
         return reportSchemaService.get(schemaId);
+    }
+
+    @RequestMapping(value = "/getReport/{id}", method = RequestMethod.GET)
+    public String getReport(@PathVariable("id") Long id, ModelMap modelMap) {
+        ReportSchema reportSchema = reportSchemaService.get(id);
+        Report report = reportService.collectReportData(reportSchema);
+        modelMap.addAttribute("report", report);
+        return "report";
+    }
+
+    @RequestMapping(value = "/getPdf/{id}", method = RequestMethod.GET)
+    public HttpEntity<byte[]> getPdf(@PathVariable("id") Long id) throws ExporterException, IOException {
+        ReportSchema reportSchema = reportSchemaService.get(id);
+        Report report = reportService.collectReportData(reportSchema);
+        File file = exporterService.exportReport(report);
+        byte[] documentBody = Files.toByteArray(file);
+        HttpHeaders header = new HttpHeaders();
+        header.setContentType(new MediaType("application", "pdf"));
+        header.set("Content-Disposition",
+                   "attachment; filename=" + file.getName());
+        header.setContentLength(documentBody.length);
+        return new HttpEntity<byte[]>(documentBody, header);
     }
 
     private ReportSchema init(ReportSchema reportSchema) {
