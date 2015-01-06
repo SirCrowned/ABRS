@@ -51,13 +51,13 @@
             <div id="report-charts">
               <table class="table table-striped">
                 <thead>
-                <tr>
-                  <th scope="col">Chart Name</th>
-                  <th scope="col">Chart Type</th>
-                  <th scope="col">Table Name</th>
-                  <th scope="col">X Axis Column</th>
-                  <th scope="col">Y Axis Column</th>
-                </tr>
+                  <tr>
+                    <th scope="col">Chart Name</th>
+                    <th scope="col">Chart Type</th>
+                    <th scope="col">Table Name</th>
+                    <th scope="col">X Axis Column</th>
+                    <th scope="col">Y Axis Column</th>
+                  </tr>
                 </thead>
                 <tbody>
 
@@ -85,12 +85,12 @@
           }).done(function (data) {
             $('#report-tables').empty();
             var tableNameList = $('<ul/>').appendTo('#report-tables');
-            $.each(data['tables'],function(i,tableName){
+            $.each(data['tables'], function (i, tableName) {
               $('<li/>').text(tableName).appendTo(tableNameList);
             });
 
             var chartTableBody = $('#report-charts tbody').empty();
-            $.each(data['charts'],function(i,chartData){
+            $.each(data['charts'], function (i, chartData) {
               var tr = $('<tr/>');
               console.log(chartData);
 

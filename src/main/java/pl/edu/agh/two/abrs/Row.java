@@ -1,12 +1,11 @@
 package pl.edu.agh.two.abrs;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
-public class Row implements Iterable{
+public class Row implements Iterable {
 
     private final List<RowItem> fields;
 

@@ -19,38 +19,38 @@ public class ReportSchemaService {
     @Autowired
     private ChartSchemaRepository chartSchemaRepository;
 
-	public ReportSchema add(ReportSchema reportSchema) {
-		List<ChartSchema> savedCharts = new ArrayList<>();
-		for (ChartSchema chartSchema : reportSchema.getCharts()) {
-			savedCharts.add(chartSchemaRepository.save(chartSchema));
-		}
-		reportSchema.setCharts(savedCharts);
+    public ReportSchema add(ReportSchema reportSchema) {
+        List<ChartSchema> savedCharts = new ArrayList<>();
+        for (ChartSchema chartSchema : reportSchema.getCharts()) {
+            savedCharts.add(chartSchemaRepository.save(chartSchema));
+        }
+        reportSchema.setCharts(savedCharts);
 
-		return reportSchemaRepository.save(reportSchema);
-	}
+        return reportSchemaRepository.save(reportSchema);
+    }
 
-	public ReportSchema get(Long id) {
-		return reportSchemaRepository.findOne(id);
-	}
+    public ReportSchema get(Long id) {
+        return reportSchemaRepository.findOne(id);
+    }
 
-	public List<ReportSchema> getAll() {
-		return reportSchemaRepository.findAll();
-	}
+    public List<ReportSchema> getAll() {
+        return reportSchemaRepository.findAll();
+    }
 
-	public ReportSchema update(ReportSchema newReport) {
-		ReportSchema oldReport = get(newReport.getId());
-		oldReport.setName(newReport.getName());
-		oldReport.getTables().clear();
-		oldReport.getCharts().clear();
+    public ReportSchema update(ReportSchema newReport) {
+        ReportSchema oldReport = get(newReport.getId());
+        oldReport.setName(newReport.getName());
+        oldReport.getTables().clear();
+        oldReport.getCharts().clear();
 
-		oldReport.setTables(newReport.getTables());
-		for (ChartSchema newChart : newReport.getCharts()) {
-			oldReport.addChart(chartSchemaRepository.save(newChart));
-		}
-		return oldReport;
-	}
+        oldReport.setTables(newReport.getTables());
+        for (ChartSchema newChart : newReport.getCharts()) {
+            oldReport.addChart(chartSchemaRepository.save(newChart));
+        }
+        return oldReport;
+    }
 
-	public void remove(Long id) {
-		reportSchemaRepository.delete(id);
-	}
+    public void remove(Long id) {
+        reportSchemaRepository.delete(id);
+    }
 }

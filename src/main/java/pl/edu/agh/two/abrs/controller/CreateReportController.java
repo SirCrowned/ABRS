@@ -13,7 +13,7 @@ import pl.edu.agh.two.abrs.model.global.GlobalSchemaTable;
 import pl.edu.agh.two.abrs.model.report.schema.ChartType;
 import pl.edu.agh.two.abrs.model.report.schema.ReportSchema;
 import pl.edu.agh.two.abrs.repository.GlobalSchemaTableRepository;
-import pl.edu.agh.two.abrs.service.report.ReportSchemaService;
+import pl.edu.agh.two.abrs.service.report.schema.ReportSchemaService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,7 +50,7 @@ public class CreateReportController {
     public
     @ResponseBody
     String addReport(@RequestBody final ReportSchema reportSchema) {
-        reportSchemaService.addReportSchema(reportSchema);
+        reportSchemaService.add(reportSchema);
         return "OK";
     }
 }

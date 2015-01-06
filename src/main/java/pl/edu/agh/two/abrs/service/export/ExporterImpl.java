@@ -19,6 +19,12 @@ public class ExporterImpl implements ExporterService {
 
     private static Font titleFont = new Font(Font.FontFamily.TIMES_ROMAN, 36, Font.BOLD);
 
+    private static void addEmptyLine(Paragraph paragraph, int number) {
+        for (int i = 0; i < number; i++) {
+            paragraph.add(new Paragraph(" "));
+        }
+    }
+
     public File exportReport(Report report) throws ExporterException {
         File f;
         FileOutputStream out;
@@ -36,7 +42,7 @@ public class ExporterImpl implements ExporterService {
             preface.add(new Paragraph(report.getName(), titleFont));
             addEmptyLine(preface, 1);
             document.add(preface);
-            for(ReportElement reportElement : report.getElements()){
+            for (ReportElement reportElement : report.getElements()) {
                 Element image = createImage(reportElement);
                 document.add(image);
             }
@@ -55,17 +61,11 @@ public class ExporterImpl implements ExporterService {
         try {
             RendererVisitor renderer = new RendererVisitor();
             element = reportElement.render(renderer);
-        } catch (Exception e){
+        } catch (Exception e) {
             throw new ExporterException("Cannot create report element image", e);
         }
 
         return element;
-    }
-
-    private static void addEmptyLine(Paragraph paragraph, int number) {
-        for (int i = 0; i < number; i++) {
-            paragraph.add(new Paragraph(" "));
-        }
     }
 }
 

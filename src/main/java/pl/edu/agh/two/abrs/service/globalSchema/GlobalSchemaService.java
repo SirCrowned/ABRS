@@ -4,6 +4,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.RowItem;
 import pl.edu.agh.two.abrs.model.ColumnType;
 import pl.edu.agh.two.abrs.model.global.GlobalSchema;
 import pl.edu.agh.two.abrs.model.global.GlobalSchemaColumn;
@@ -109,9 +110,9 @@ public class GlobalSchemaService {
         List<Row> result = table.getRecords().stream()
                 .map(record -> {
                     int i = 0;
-                    List<Object> values = new ArrayList<>();
+                    List<RowItem> values = new ArrayList<>();
                     for (String strRepr : record.getValues()) {
-                        values.add(requestedColsTypes.get(i++).fromString(strRepr));
+                        values.add(new RowItem("", requestedColsTypes.get(i++).fromString(strRepr)));
                     }
                     return new Row(values);
                 }).collect(Collectors.toList());
@@ -120,8 +121,10 @@ public class GlobalSchemaService {
 
     public Row getTableColumnNames(String tableName) {
         GlobalSchemaTable table = tableRepository.findFirstByName(tableName);
-        List<Object> columnNames1 = table.getColumns().stream()
-                .map(col -> col.getName())
+        List<RowItem> columnNames1 = table.getColumns().stream()
+                .map(col -> {
+                    return new RowItem(col.getName(), col.getName());
+                })
                 .collect(Collectors.toList());
         return new Row(columnNames1);
     }

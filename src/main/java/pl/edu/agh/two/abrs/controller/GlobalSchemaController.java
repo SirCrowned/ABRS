@@ -82,13 +82,13 @@ public class GlobalSchemaController {
         List<GlobalSchemaTable> tables = new ArrayList<>();
         for (GlobalSchemaTable table : globalSchema.getTables()) {
             List<GlobalSchemaColumn> columns = new ArrayList<>();
-			for (GlobalSchemaColumn column : table.getColumns()) {
-				columns.add(new GlobalSchemaColumn(column.getColumnType(), column.getName()));
-			}
-			List<GlobalSchemaRecord> records = new ArrayList<>();
-			for (GlobalSchemaRecord record : table.getRecords()) {
-				records.add(new GlobalSchemaRecord(record.getValues()));
-			}
+            for (GlobalSchemaColumn column : table.getColumns()) {
+                columns.add(new GlobalSchemaColumn(column.getColumnType(), column.getName()));
+            }
+            List<GlobalSchemaRecord> records = new ArrayList<>();
+            for (GlobalSchemaRecord record : table.getRecords()) {
+                records.add(new GlobalSchemaRecord(record.getValues()));
+            }
             tables.add(new GlobalSchemaTable(table.getName(), columns, records, table.getGraphItem()));
         }
 

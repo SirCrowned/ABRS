@@ -39,6 +39,8 @@ public class Mapping {
         return localSchemaColumn;
     }
 
-    public Long getId() { return id; }
+    public Long getId() {
+        return id;
+    }
 
 }

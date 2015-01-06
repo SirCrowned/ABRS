@@ -157,7 +157,7 @@
       //<![CDATA[
       jQuery(function ($) {
         $('#source td').click(function (e) {
-          var id = $(this).data('id')
+          var id = $(this).data('id');
 
           $("#column td").removeClass('success');
 
@@ -204,7 +204,7 @@
         });
 
         $('.remove').click(function (e) {
-          
+
           $.ajax({
             url: "http://localhost:8080/mapping/remove",
             type: "POST",

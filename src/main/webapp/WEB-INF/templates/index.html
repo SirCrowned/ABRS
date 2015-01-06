@@ -60,7 +60,7 @@
     /*<![CDATA[*/
     var duplicateConnections = 0;
     var labelCss = {
-      cssClass:"labelClass"
+      cssClass: "labelClass"
     };
 
     $('#save').on('click', function () {
@@ -68,8 +68,8 @@
       function IterateDrawnElements() {  //part of save
         var list = [];
         $('#container').children('div.item').each(function () {
-          var pos = $(this).position()
-          var diagram_label = $(this).children('div.title').text()
+          var pos = $(this).position();
+          var diagram_label = $(this).children('div.title').text();
           if (diagram_label == null || diagram_label == '') {
             diagram_label = '';
           }
@@ -86,7 +86,7 @@
 
       function IterateConnections() {  //part of save
         var list = [];
-        var conns = jsPlumb.getConnections()
+        var conns = jsPlumb.getConnections();
         for (var i = 0; i < conns.length; i++) {
           var source = conns[i].source.id;
           var target = conns[i].target.id;
@@ -105,7 +105,6 @@
             },
               list.push(conn);
           }
-          ;
         }
         return list;
       }
@@ -116,7 +115,7 @@
       var wrapper = {
         items: d_elements,
         conn: d_conns
-      }
+      };
 
 
       $.ajax({
@@ -233,7 +232,7 @@
         var source = $('<div>').attr('id', 'source' + i).addClass('item');
         sources.push(source);
 
-        source.bind("dblclick", function(connection, originalEvent) {
+        source.bind("dblclick", function (connection, originalEvent) {
           sources.splice(sources.indexOf(source), 1);
         });
 
@@ -281,7 +280,7 @@
         stateName.focus();
 
         jsPlumb.bind("connection", function (info, originalEvent) {
-          if(duplicateConnections == sources.length - 1) {
+          if (duplicateConnections == sources.length - 1) {
             duplicateConnections = 0;
             var connection = info.connection;
 
@@ -296,7 +295,7 @@
             labelInput.focus();
             labelInput.keyup(function (e) {
                 if (e.keyCode === 13) {
-                  connection.addOverlay(["Label", {label: this.value, id: "label" }, labelCss]);
+                  connection.addOverlay(["Label", {label: this.value, id: "label"}, labelCss]);
                   labelInput.remove();
                 }
               }

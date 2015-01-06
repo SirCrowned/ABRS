@@ -9,7 +9,9 @@ import java.util.List;
 public class Table extends ReportElement {
 
     private final String name;
+
     private final Row header;
+
     private final List<Row> rows;
 
     public Table(String name, List<Row> rows, Row header) {

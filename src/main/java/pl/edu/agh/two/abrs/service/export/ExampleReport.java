@@ -2,6 +2,7 @@ package pl.edu.agh.two.abrs.service.export;
 
 import org.apache.commons.lang3.tuple.Pair;
 import pl.edu.agh.two.abrs.Row;
+import pl.edu.agh.two.abrs.RowItem;
 import pl.edu.agh.two.abrs.model.report.Chart;
 import pl.edu.agh.two.abrs.model.report.Report;
 import pl.edu.agh.two.abrs.model.report.ReportElement;
@@ -9,6 +10,7 @@ import pl.edu.agh.two.abrs.model.report.Table;
 import pl.edu.agh.two.abrs.model.report.schema.ChartType;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,9 +29,15 @@ public class ExampleReport {
         //Example table
         List<Object> headerFields = Arrays.asList("User", "Score", "Money");
         List<Object> sampleValues = Arrays.asList("X", 1, 10.99);
-        Row row1 = new Row(sampleValues);
+
+        List<RowItem> rowItems = new ArrayList<>();
+        rowItems.add(new RowItem("User", "X"));
+        rowItems.add(new RowItem("Score", 1));
+        rowItems.add(new RowItem("Money", 10.99));
+
+        Row row1 = new Row(rowItems);
         List<Row> rows = Arrays.asList(row1, row1, row1);
-        ReportElement table = new Table("Table", rows, new Row(headerFields));
+        ReportElement table = new Table("Table", rows, new Row(rowItems));
 
         //Example pie chart
         Chart pieChart = new Chart(ChartType.PIE, "PieChart");

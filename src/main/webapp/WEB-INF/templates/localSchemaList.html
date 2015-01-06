@@ -32,13 +32,13 @@
           </tr>
         </thead>
         <tbody>
-        <tr th:each="localSchema : ${localSchemaList}" th:attr="data-id=${localSchema.id}" class="schema-definition">
-          <td th:text="${localSchema.id}"></td>
-          <td th:text="${localSchema.name}"></td>
-          <td th:text="${localSchema.source.name}"></td>
-          <td th:text="${localSchema.graphItem.label}">null</td>
-          <td style="width: 700px;">
-            <div class="list">
+          <tr th:each="localSchema : ${localSchemaList}" th:attr="data-id=${localSchema.id}" class="schema-definition">
+            <td th:text="${localSchema.id}"></td>
+            <td th:text="${localSchema.name}"></td>
+            <td th:text="${localSchema.source.name}"></td>
+            <td th:text="${localSchema.graphItem.label}">null</td>
+            <td style="width: 700px;">
+              <div class="list">
               <table class="table">
                 <thead>
                   <tr>
@@ -57,102 +57,102 @@
                   </tr>
                 </tbody>
               </table>
-            </div>
-            <div class="edit-form" style="display: none">
-              <form th:id="${'form-'+localSchema.id}" role="form">
-                <table class="table">
-                  <thead>
-                    <tr>
-                      <th scope="col">Column name</th>
-                      <th scope="col">Source column name</th>
-                      <th scope="col">Type</th>
-                      <th scope="col">Transformation</th>
-                      <th scope="col"></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    <tr th:each="column : ${localSchema.localSchemaColumn}">
-                      <td>
-                        <input type="text" th:value="${column.name}" class="form-control column" />
-                      </td>
-                      <td>
-                        <input type="text" th:value="${column.sourceName}" class="form-control source-column" />
-                      </td>
-                      <td>
-                        <select class="form-control type">
-                          <option th:selected="${column.type.toString() == 'BOOLEAN'}" value="BOOLEAN">Boolean</option>
-                          <option th:selected="${column.type.toString() == 'INTEGER'}" value="INTEGER">Integer</option>
-                          <option th:selected="${column.type.toString() == 'DOUBLE'}" value="DOUBLE">Double</option>
-                          <option th:selected="${column.type.toString() == 'STRING'}" value="STRING">String</option>
-                          <option th:selected="${column.type.toString() == 'DATE'}" value="DATE">Date</option>
-                        </select>
-                      </td>
-                      <td>
-                        <select class="form-control transformation">
-                          <option th:selected="${column.transformation == 'concat'}" value="concat">concat()</option>
-                          <option th:selected="${column.transformation == 'diff'}" value="diff">diff()</option>
-                          <option th:selected="${column.transformation == 'div'}" value="div">div()</option>
-                          <option th:selected="${column.transformation == 'identity'}" value="identity">identity()</option>
-                          <option th:selected="${column.transformation == 'mul'}" value="mul">mul()</option>
-                          <option th:selected="${column.transformation == 'sum'}" value="sum">sum()</option>
-                        </select>
-                      </td>
-                      <td>
-                        <a href="#" class="remove-column btn btn-danger">Remove</a>
-                      </td>
-                    </tr>
-                  </tbody>
-                  <tfoot>
-                    <tr class="new-column-definition">
-                      <td>
-                        <input type="text" placeholder="New column name" class="form-control new-column" />
-                      </td>
-                      <td>
-                        <input type="text" placeholder="Source column name" class="form-control new-source-column" />
-                      </td>
-                      <td>
-                        <select class="form-control new-type">
-                          <option value="BOOLEAN">Boolean</option>
-                          <option value="INTEGER">Integer</option>
-                          <option value="DOUBLE">Double</option>
-                          <option value="STRING">String</option>
-                          <option value="DATE">Date</option>
-                        </select>
-                      </td>
-                      <td>
-                        <select class="form-control new-transformation">
-                          <option value="concat">concat()</option>
-                          <option value="diff">diff()</option>
-                          <option value="div">div()</option>
-                          <option value="identity">identity()</option>
-                          <option value="mul">mul()</option>
-                          <option value="sum">sum()</option>
-                        </select>
-                      </td>
-                      <td>
-                        <a href="#" class="add btn btn-success">Add</a>
-                      </td>
-                    </tr>
-                  </tfoot>
-                </table>
-                <div class="pull-right clearfix">
-                  <a href="#" class="cancel btn btn-default" th:attr="data-id=${localSchema.id}">Cancel</a>
-                  <a href="#" class="save btn btn-success" th:attr="data-id=${localSchema.id}">Save</a>
-                </div>
-              </form>
-            </div>
-          </td>
-          <td>
-             <a href="#" class="edit btn btn-default" th:attr="data-id=${localSchema.id}">Edit</a>
-             <a href="#" class="remove btn btn-danger" th:attr="data-id=${localSchema.id}">Remove</a>
-          </td>
-        </tr>
+              </div>
+              <div class="edit-form" style="display: none">
+                <form th:id="${'form-'+localSchema.id}" role="form">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Column name</th>
+                        <th scope="col">Source column name</th>
+                        <th scope="col">Type</th>
+                        <th scope="col">Transformation</th>
+                        <th scope="col"></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr th:each="column : ${localSchema.localSchemaColumn}">
+                        <td>
+                          <input type="text" th:value="${column.name}" class="form-control column"/>
+                        </td>
+                        <td>
+                          <input type="text" th:value="${column.sourceName}" class="form-control source-column"/>
+                        </td>
+                        <td>
+                          <select class="form-control type">
+                            <option th:selected="${column.type.toString() == 'BOOLEAN'}" value="BOOLEAN">Boolean</option>
+                            <option th:selected="${column.type.toString() == 'INTEGER'}" value="INTEGER">Integer</option>
+                            <option th:selected="${column.type.toString() == 'DOUBLE'}" value="DOUBLE">Double</option>
+                            <option th:selected="${column.type.toString() == 'STRING'}" value="STRING">String</option>
+                            <option th:selected="${column.type.toString() == 'DATE'}" value="DATE">Date</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control transformation">
+                            <option th:selected="${column.transformation == 'concat'}" value="concat">concat()</option>
+                            <option th:selected="${column.transformation == 'diff'}" value="diff">diff()</option>
+                            <option th:selected="${column.transformation == 'div'}" value="div">div()</option>
+                            <option th:selected="${column.transformation == 'identity'}" value="identity">identity()</option>
+                            <option th:selected="${column.transformation == 'mul'}" value="mul">mul()</option>
+                            <option th:selected="${column.transformation == 'sum'}" value="sum">sum()</option>
+                          </select>
+                        </td>
+                        <td>
+                          <a href="#" class="remove-column btn btn-danger">Remove</a>
+                        </td>
+                      </tr>
+                    </tbody>
+                    <tfoot>
+                      <tr class="new-column-definition">
+                        <td>
+                          <input type="text" placeholder="New column name" class="form-control new-column"/>
+                        </td>
+                        <td>
+                          <input type="text" placeholder="Source column name" class="form-control new-source-column"/>
+                        </td>
+                        <td>
+                          <select class="form-control new-type">
+                            <option value="BOOLEAN">Boolean</option>
+                            <option value="INTEGER">Integer</option>
+                            <option value="DOUBLE">Double</option>
+                            <option value="STRING">String</option>
+                            <option value="DATE">Date</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select class="form-control new-transformation">
+                            <option value="concat">concat()</option>
+                            <option value="diff">diff()</option>
+                            <option value="div">div()</option>
+                            <option value="identity">identity()</option>
+                            <option value="mul">mul()</option>
+                            <option value="sum">sum()</option>
+                          </select>
+                        </td>
+                        <td>
+                          <a href="#" class="add btn btn-success">Add</a>
+                        </td>
+                      </tr>
+                    </tfoot>
+                  </table>
+                  <div class="pull-right clearfix">
+                    <a href="#" class="cancel btn btn-default" th:attr="data-id=${localSchema.id}">Cancel</a>
+                    <a href="#" class="save btn btn-success" th:attr="data-id=${localSchema.id}">Save</a>
+                  </div>
+                </form>
+              </div>
+            </td>
+            <td>
+              <a href="#" class="edit btn btn-default" th:attr="data-id=${localSchema.id}">Edit</a>
+              <a href="#" class="remove btn btn-danger" th:attr="data-id=${localSchema.id}">Remove</a>
+            </td>
+          </tr>
         </tbody>
       </table>
     </div>
     <script type="text/javascript">
-    //<![CDATA[
-      jQuery(function($) {
+      //<![CDATA[
+      jQuery(function ($) {
         $('table tr')
           .on('click', '.btn.edit', function (event) {
             event.preventDefault();
@@ -168,7 +168,7 @@
               $('.edit-form', $parent).slideUp();
             }
           })
-          .on('click', '.new-column-definition .btn.add', function(event) {
+          .on('click', '.new-column-definition .btn.add', function (event) {
             event.preventDefault();
             var $parent = $(this).closest('tr.new-column-definition');
             var $container = $('tbody', $parent.closest('table'));
@@ -219,17 +219,17 @@
 
             $column.appendTo($container);
           })
-          .on('click', '.btn.remove-column', function(event) {
+          .on('click', '.btn.remove-column', function (event) {
             event.preventDefault();
             if (confirm('Are you sure?')) {
               $(this).closest('tr').remove();
             }
           })
-          .on('click', '.btn.save', function(event) {
+          .on('click', '.btn.save', function (event) {
             event.preventDefault();
             var $parent = $(this).closest('tr.schema-definition');
             columns = [];
-            $('form tbody > tr', $parent).each(function(){
+            $('form tbody > tr', $parent).each(function () {
               var $this = $(this);
               columns.push({
                 name: $('input.column', $this).val(),
@@ -261,7 +261,7 @@
               }
             });
           })
-          .on('click', '.btn.remove', function(event){
+          .on('click', '.btn.remove', function (event) {
             event.preventDefault();
             if (confirm('Are you sure?')) {
               var $item = $(this).closest('tr');
