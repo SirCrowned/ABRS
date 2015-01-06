@@ -91,7 +91,7 @@ public class GlobalSchemaService {
     }
 
     private List<ColumnType> getColumnTypes(GlobalSchemaTable table, List<Integer> requestedColsIndices) {
-        List<ColumnType> result = new ArrayList<>(2);
+        List<ColumnType> result = new ArrayList<>(requestedColsIndices.size());
         requestedColsIndices.stream().forEach(i -> {
             ColumnType type = table.getColumns().get(i).getColumnType();
             result.add(type);
