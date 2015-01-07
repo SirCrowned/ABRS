@@ -24,7 +24,11 @@ import org.thymeleaf.templateresolver.ServletContextTemplateResolver;
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+
+import java.beans.PropertyVetoException;
 import java.util.Properties;
+
+import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 @Configuration
 @EnableWebMvc
@@ -32,6 +36,8 @@ import java.util.Properties;
 @EnableJpaRepositories(basePackages = "pl.edu.agh.two.abrs.repository")
 @EnableTransactionManagement
 public class ApplicationConfig extends WebMvcConfigurerAdapter {
+
+    private static final String DATABASE_FILE_PATH_PROPERTY_KEY = "databaseFilePath";
 
     @Bean
     public MappingJackson2HttpMessageConverter mappingJackson2HttpMessageConverter() {
@@ -72,8 +78,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
         registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
     }
 
-    @Bean
-    public DataSource dataSource() {
+    private DataSource inMemoryDataSource() {
         EmbeddedDatabase dataSource = new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
                 .setScriptEncoding("UTF-8")
@@ -82,8 +87,32 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
         return dataSource;
     }
 
+    private DataSource fileDataSource(String path) throws PropertyVetoException {
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+
+        dataSource.setDriverClass("org.h2.Driver");
+        dataSource.setJdbcUrl("jdbc:h2:" + path);
+        dataSource.setTestConnectionOnCheckout(true);
+        dataSource.setUser("abrs");
+        dataSource.setPassword("abrs");
+        dataSource.setInitialPoolSize(5);
+        dataSource.setMaxPoolSize(10);
+
+        return dataSource;
+    }
+
     @Bean
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
+    public DataSource dataSource() throws PropertyVetoException {
+        String databaseFilePath = System.getProperty(DATABASE_FILE_PATH_PROPERTY_KEY);
+        if (databaseFilePath != null) {
+            return fileDataSource(databaseFilePath);
+        } else {
+            return inMemoryDataSource();
+        }
+    }
+
+    @Bean
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory() throws PropertyVetoException {
         LocalContainerEntityManagerFactoryBean factory = new LocalContainerEntityManagerFactoryBean();
 
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
@@ -105,7 +134,7 @@ public class ApplicationConfig extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
+    public PlatformTransactionManager transactionManager() throws PropertyVetoException {
         EntityManagerFactory factory = entityManagerFactory().getObject();
         return new JpaTransactionManager(factory);
     }
